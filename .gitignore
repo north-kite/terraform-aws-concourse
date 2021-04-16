@@ -22,7 +22,6 @@ override.tf.json
 *_override.tf
 *_override.tf.json
 
-local*.*
 modules/logging/logging.json
 
 # MacOS System Files
