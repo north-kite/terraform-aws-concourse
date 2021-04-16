@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# This is where we will install Concourse in Worker mode
+echo "Userdata script ran OK for ${env}!"
