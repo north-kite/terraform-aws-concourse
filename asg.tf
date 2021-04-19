@@ -7,10 +7,10 @@ resource "aws_autoscaling_group" "concourse_web" {
 
   vpc_zone_identifier = module.vpc.private_subnets
 
-//  tags = merge(
-//    local.common_tags,
-//    { Name = "${local.environment}-concourse-web" }
-//  )
+  //  tags = merge(
+  //    local.common_tags,
+  //    { Name = "${local.environment}-concourse-web" }
+  //  )
 
   launch_template {
     id      = aws_launch_template.concourse_web.id
@@ -33,10 +33,10 @@ resource "aws_autoscaling_group" "worker" {
 
   vpc_zone_identifier = module.vpc.private_subnets
 
-//  tags = merge(
-//    local.common_tags,
-//    { Name = "${local.environment}-concourse-worker" }
-//  )
+  //  tags = merge(
+  //    local.common_tags,
+  //    { Name = "${local.environment}-concourse-worker" }
+  //  )
 
   launch_template {
     id      = aws_launch_template.concourse_worker.id
