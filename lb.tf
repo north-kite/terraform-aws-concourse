@@ -21,7 +21,7 @@ resource "aws_lb_listener" "concourse_https" {
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
   //TODO: Requires a R53 HZ with some kind of sub-domain config allowing from a domain we can use for this
-  certificate_arn = aws_acm_certificate.concourse.arn
+  certificate_arn = aws_acm_certificate.concourse_web_dl.arn
 
   default_action {
     type = "fixed-response"

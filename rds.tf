@@ -13,10 +13,10 @@ resource "aws_kms_alias" "concourse_aurora" {
   target_key_id = aws_kms_key.concourse_aurora.key_id
 }
 
-data "aws_db_cluster_snapshot" "concourse_cluster" {
-  db_cluster_identifier = local.name
-  most_recent           = true
-}
+//data "aws_db_cluster_snapshot" "concourse_cluster" {
+//  db_cluster_identifier = local.name
+//  most_recent           = true
+//}
 
 resource "aws_rds_cluster" "cluster" {
   cluster_identifier        = local.name
@@ -32,7 +32,7 @@ resource "aws_rds_cluster" "cluster" {
   db_subnet_group_name      = aws_db_subnet_group.concourse_cluster.id
   final_snapshot_identifier = "${local.name}-final-snapshot"
   skip_final_snapshot       = false
-  snapshot_identifier       = data.aws_db_cluster_snapshot.concourse_cluster.id
+//  snapshot_identifier       = data.aws_db_cluster_snapshot.concourse_cluster.id
   storage_encrypted         = true
   kms_key_id                = aws_kms_key.concourse_aurora.arn
   vpc_security_group_ids    = [aws_security_group.concourse_db.id]
@@ -41,7 +41,7 @@ resource "aws_rds_cluster" "cluster" {
   lifecycle {
     ignore_changes = [
       engine_version,
-      snapshot_identifier,
+//      snapshot_identifier,
     ]
   }
 }

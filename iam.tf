@@ -1,5 +1,5 @@
 resource "aws_iam_role" "concourse_web" {
-  name               = local.name
+  name               = "concourse_web"
   assume_role_policy = data.aws_iam_policy_document.concourse_web.json
 
   tags = merge(
@@ -10,7 +10,7 @@ resource "aws_iam_role" "concourse_web" {
 
 // not convinced this is actually needed, in terms of the perms/TR it supplies
 resource "aws_iam_role" "concourse_worker" {
-  name = local.name
+  name = "concourse_worker"
 
   tags = merge(
     local.common_tags,

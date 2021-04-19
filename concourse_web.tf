@@ -5,7 +5,7 @@ resource "aws_launch_template" "concourse_web" {
   instance_initiated_shutdown_behavior = "terminate"
 
   user_data = templatefile(
-    "files/concourse_web/userdata.tf2",
+    "${path.module}/files/concourse_web/userdata.tf2",
     {
       env = local.environment
     }

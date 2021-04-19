@@ -6,7 +6,7 @@ resource "aws_launch_template" "concourse_worker" {
   tags                                 = merge(local.common_tags, { Name = local.name })
 
   user_data = templatefile(
-    "files/concourse_worker/userdata.tf2",
+    "${path.module}/files/concourse_worker/userdata.tf2",
     {
       env = local.environment
     }

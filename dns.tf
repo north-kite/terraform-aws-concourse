@@ -1,6 +1,4 @@
-//TODO: Requires a R53 HZ with some kind of sub-domain config allowing from a domain we can use for this
-//resource "aws_acm_certificate" "concourse" {
-//  domain_name       = local.fqdn
-//  validation_method = "DNS"
-//}
-
+data "aws_route53_zone" "hosted_zone" {
+  name         = local.hosted_zone
+  private_zone = false
+}

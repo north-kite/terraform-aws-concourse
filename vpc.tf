@@ -10,6 +10,7 @@ module "vpc" {
   public_subnets  = var.cidr.public
 
   enable_nat_gateway = true
+  create_igw = true
 
   tags = {
     Terraform   = "true"

@@ -1,7 +1,8 @@
 locals {
   name        = var.project_name
-  environment = terraform.workspace == "default" ? "dev" : terraform.workspace
-  fqdn        = join(".", [local.name, local.environment, var.root_domain]) //TODO: Setup some DNS...
+  environment = terraform.workspace == "default" ? "mgmt-dev" : terraform.workspace
+  hosted_zone = join(".", [local.environment, var.root_domain])
+  fqdn        = join(".", [local.name, local.hosted_zone])
   zone_names  = data.aws_availability_zones.current.names
 
   common_tags = {
