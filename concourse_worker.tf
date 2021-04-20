@@ -8,7 +8,7 @@ resource "aws_launch_template" "concourse_worker" {
   user_data = templatefile("${path.module}/files/concourse_worker/userdata.tf2", {
     env = local.environment
   })
-  
+
   block_device_mappings {
     device_name = "/dev/xvda"
 
