@@ -1,5 +1,5 @@
 resource "aws_iam_role" "concourse_web" {
-  name               = "concourse_web"
+  name               = "${local.environment}-concourse-web"
   assume_role_policy = data.aws_iam_policy_document.concourse_web.json
 
   tags = merge(
@@ -10,7 +10,7 @@ resource "aws_iam_role" "concourse_web" {
 
 // not convinced this is actually needed, in terms of the perms/TR it supplies
 resource "aws_iam_role" "concourse_worker" {
-  name = "concourse_worker"
+  name = "${local.environment}-concourse-worker"
 
   tags = merge(
     local.common_tags,
@@ -88,7 +88,7 @@ data "aws_iam_policy_document" "concourse_worker_autoscaling" {
 }
 
 resource "aws_iam_policy" "concourse_worker_autoscaling" {
-  name        = "${local.name}AutoScaling"
+  name        = "${local.environment}-concourse-worker-asg"
   description = "Change Concourse Worker's Instance Health"
   policy      = data.aws_iam_policy_document.concourse_worker_autoscaling.json
 }

@@ -1,5 +1,5 @@
 resource "aws_lb" "concourse_lb" {
-  name               = local.name
+  name               = "${local.environment}-concourse-web"
   internal           = false
   load_balancer_type = "application"
   //  subnets            = module.vpc.aws_subnets_public[*].id
@@ -50,7 +50,7 @@ resource "aws_lb_listener_rule" "concourse_https" {
 }
 
 resource "aws_lb_target_group" "concourse_web_http" {
-  name     = "${local.name}-http"
+  name     = "${local.environment}-concourse-web-http"
   port     = 8080
   protocol = "HTTP"
   vpc_id   = module.vpc.vpc_id
@@ -69,13 +69,13 @@ resource "aws_lb_target_group" "concourse_web_http" {
   tags = merge(local.common_tags, { Name = local.name })
 }
 
-resource "aws_autoscaling_attachment" "web_http" {
-  alb_target_group_arn   = aws_lb_target_group.concourse_web_http.id
-  autoscaling_group_name = aws_autoscaling_group.concourse_web.name
-}
+//resource "aws_autoscaling_attachment" "web_http" {
+//  alb_target_group_arn   = aws_lb_target_group.concourse_web_http.id
+//  autoscaling_group_name = aws_autoscaling_group.concourse_web.name
+//}
 
 resource "aws_lb_target_group" "web_ssh" {
-  name     = "${local.name}-ssh"
+  name     = "${local.environment}-concourse-web-ssh"
   port     = 2222
   protocol = "TCP"
   vpc_id   = module.vpc.vpc_id
@@ -92,13 +92,13 @@ resource "aws_lb_target_group" "web_ssh" {
   # https://github.com/terraform-providers/terraform-provider-aws/issues/9093
   stickiness {
     enabled = false
-    type    = "lb_cookie"
+    type    = "source_ip"
   }
 
   tags = merge(local.common_tags, { Name = local.name })
 }
 
-resource "aws_autoscaling_attachment" "web_ssh" {
-  alb_target_group_arn   = aws_lb_target_group.web_ssh.id
-  autoscaling_group_name = aws_autoscaling_group.concourse_web.name
-}
+//resource "aws_autoscaling_attachment" "web_ssh" {
+//  alb_target_group_arn   = aws_lb_target_group.web_ssh.id
+//  autoscaling_group_name = aws_autoscaling_group.concourse_web.name
+//}

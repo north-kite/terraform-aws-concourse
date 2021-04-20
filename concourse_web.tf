@@ -1,15 +1,17 @@
+data "template_file" "concourse_web_userdata" {
+  template = file(format("%s/files/concourse_web/userdata.tf2", path.module))
+  vars = {
+    env = local.environment
+  }
+}
+
 resource "aws_launch_template" "concourse_web" {
-  name_prefix                          = "${local.name}-"
+  name_prefix                          = "${local.name}-concourse-web"
   image_id                             = var.ami_id
   instance_type                        = var.concourse_web_conf.instance_type
   instance_initiated_shutdown_behavior = "terminate"
 
-  user_data = templatefile(
-    "${path.module}/files/concourse_web/userdata.tf2",
-    {
-      env = local.environment
-    }
-  )
+  user_data = base64encode(data.template_file.concourse_web_userdata.rendered)
 
   block_device_mappings {
     device_name = "/dev/xvda"

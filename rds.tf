@@ -9,7 +9,7 @@ resource "aws_kms_key" "concourse_aurora" {
 }
 
 resource "aws_kms_alias" "concourse_aurora" {
-  name          = "alias/${local.name}-db-key"
+  name          = "alias/${local.environment}-concourse-db-key"
   target_key_id = aws_kms_key.concourse_aurora.key_id
 }
 
@@ -19,7 +19,7 @@ resource "aws_kms_alias" "concourse_aurora" {
 //}
 
 resource "aws_rds_cluster" "cluster" {
-  cluster_identifier        = local.name
+  cluster_identifier        = "${local.environment}-concourse"
   engine                    = var.concourse_db_conf.engine
   engine_version            = var.concourse_db_conf.engine_version
   availability_zones        = local.zone_names
