@@ -5,7 +5,7 @@ variable "region" {
 variable "project_name" {
   description = "The project / repo name for use in resource naming / tags"
   type        = string
-  default     = "aws-cicd"
+  default     = "cicd"
 }
 
 variable "project_owner" {
@@ -61,7 +61,7 @@ variable "concourse_web_conf" {
   default = {
     instance_type         = "t3.micro"
     max_instance_lifetime = 60 * 60 * 24 * 7
-    count                 = 1
+    count                 = 0
     environment_override  = {}
     asg_scaling_config = {
       night = {
@@ -103,7 +103,7 @@ variable "concourse_worker_conf" {
   })
   default = {
     instance_type        = "t3.micro"
-    count                = 1
+    count                = 0
     environment_override = {}
     asg_scaling_config = {
       night = {
@@ -143,7 +143,7 @@ variable "concourse_db_conf" {
     engine_version          = "10.11"
     backup_retention_period = 14
     preferred_backup_window = "01:00-03:00"
-    username                = "admin"
+    username                = "concourseadmin"
     password                = "4dm1n15strator" // TODO: Change this
   }
 }

@@ -1,4 +1,4 @@
 #!/bin/bash
 
-# This is where we will install Concourse in Web mode
+# This is where we will install Concourse in Web modes
 echo "Userdata script ran OK for ${env}!"

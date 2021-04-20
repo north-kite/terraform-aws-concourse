@@ -7,10 +7,10 @@ resource "aws_autoscaling_group" "concourse_web" {
 
   vpc_zone_identifier = module.vpc.private_subnets
 
-  tags = merge(
-    local.common_tags,
-    { Name = "${local.environment}-concourse-web" }
-  )
+  //  tags = merge(
+  //    local.common_tags,
+  //    { Name = "${local.environment}-concourse-web" }
+  //  )
 
   launch_template {
     id      = aws_launch_template.concourse_web.id
@@ -26,17 +26,17 @@ resource "aws_autoscaling_group" "concourse_web" {
 }
 
 resource "aws_autoscaling_group" "worker" {
-  name             = local.name
+  name             = "${local.environment}-concourse-worker"
   max_size         = var.concourse_worker_conf.count
   min_size         = var.concourse_worker_conf.count
   desired_capacity = var.concourse_worker_conf.count
 
   vpc_zone_identifier = module.vpc.private_subnets
 
-  tags = merge(
-    local.common_tags,
-    { Name = "${local.environment}-concourse-worker" }
-  )
+  //  tags = merge(
+  //    local.common_tags,
+  //    { Name = "${local.environment}-concourse-worker" }
+  //  )
 
   launch_template {
     id      = aws_launch_template.concourse_worker.id
@@ -86,7 +86,7 @@ resource "aws_autoscaling_schedule" "concourse_web_day" {
 }
 
 resource "aws_autoscaling_policy" "concourse_web_scale_up" {
-  name                   = "web-scale-up"
+  name                   = "concourse-web-scale-up"
   scaling_adjustment     = 1
   adjustment_type        = "ChangeInCapacity"
   cooldown               = 180
@@ -94,7 +94,7 @@ resource "aws_autoscaling_policy" "concourse_web_scale_up" {
 }
 
 resource "aws_autoscaling_policy" "concourse_web_scale_down" {
-  name                   = "web-scale-down"
+  name                   = "concourse-web-scale-down"
   scaling_adjustment     = -1
   adjustment_type        = "ChangeInCapacity"
   cooldown               = 180
@@ -102,7 +102,7 @@ resource "aws_autoscaling_policy" "concourse_web_scale_down" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu_high" {
-  alarm_name          = "cpu-util-high-web"
+  alarm_name          = "concourse-cpu-util-high-web"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "3"
   metric_name         = "CPUUtilization"
@@ -120,7 +120,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_high" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu-low" {
-  alarm_name          = "cpu-util-low-web"
+  alarm_name          = "concourse-cpu-util-low-web"
   comparison_operator = "LessThanOrEqualToThreshold"
   evaluation_periods  = "3"
   metric_name         = "CPUUtilization"

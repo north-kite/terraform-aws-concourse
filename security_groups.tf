@@ -8,7 +8,7 @@ resource "aws_security_group" "concourse_lb" {
 }
 
 resource "aws_security_group" "concourse_web" {
-  name        = local.name
+  name        = "ConcourseWeb"
   description = "Concourse Web Nodes"
   vpc_id      = module.vpc.vpc_id
   tags        = merge(local.common_tags, { Name = local.name })
@@ -19,8 +19,8 @@ resource "aws_security_group" "concourse_web" {
 }
 
 resource "aws_security_group" "concourse_worker" {
-  name        = local.name
-  description = "Concourse Worker Nodes"
+  name        = "ConcourseWorker"
+  description = "ConcourseWorker"
   vpc_id      = module.vpc.vpc_id
   tags        = merge(local.common_tags, { Name = "${local.name}-lb" })
 

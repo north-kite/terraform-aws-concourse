@@ -1,15 +1,12 @@
 resource "aws_launch_template" "concourse_web" {
-  name_prefix                          = "${local.name}-"
+  name_prefix                          = "${local.name}-concourse-web"
   image_id                             = var.ami_id
   instance_type                        = var.concourse_web_conf.instance_type
   instance_initiated_shutdown_behavior = "terminate"
 
-  user_data = templatefile(
-    "files/concourse_web/userdata.tf2",
-    {
-      env = local.environment
-    }
-  )
+  user_data = templatefile("${path.module}/files/concourse_web/userdata.tf2", {
+    env = local.environment
+  })
 
   block_device_mappings {
     device_name = "/dev/xvda"
