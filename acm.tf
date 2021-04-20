@@ -1,6 +1,8 @@
 resource "aws_acm_certificate" "concourse_web_dl" {
   domain_name       = local.fqdn
   validation_method = "DNS"
+
+  tags = local.common_tags
 }
 
 resource "aws_route53_record" "concourse_web_dl" {

@@ -1,10 +1,3 @@
-data "template_file" "concourse_worker_userdata" {
-  template = file(format("%s/files/concourse_worker/userdata.tf2", path.module))
-  vars = {
-    env = local.environment
-  }
-}
-
 resource "aws_launch_template" "concourse_worker" {
   name_prefix                          = "${local.name}-concourse-worker"
   image_id                             = var.ami_id
@@ -12,8 +5,10 @@ resource "aws_launch_template" "concourse_worker" {
   instance_initiated_shutdown_behavior = "terminate"
   tags                                 = merge(local.common_tags, { Name = local.name })
 
-  user_data = base64encode(data.template_file.concourse_worker_userdata.rendered)
-
+  user_data = templatefile("${path.module}/files/concourse_worker/userdata.tf2", {
+    env = local.environment
+  })
+  
   block_device_mappings {
     device_name = "/dev/xvda"
 
