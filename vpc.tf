@@ -9,11 +9,11 @@ module "vpc" {
   private_subnets = var.cidr.private
   public_subnets  = var.cidr.public
 
-  enable_nat_gateway = true
-  create_igw         = true
+  enable_nat_gateway        = true
+  create_igw                = true
   enable_public_s3_endpoint = true
-  enable_s3_endpoint = true
-  enable_dynamodb_endpoint = true
+  enable_s3_endpoint        = true
+  enable_dynamodb_endpoint  = true
 
   tags = {
     Terraform   = "true"
