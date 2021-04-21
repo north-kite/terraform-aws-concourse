@@ -42,6 +42,7 @@ variable "concourse_web_conf" {
     max_instance_lifetime = number
     instance_type         = string
     environment_override  = map(string)
+    rds_conf = map(string)
     asg_scaling_config = object({
       night = object({
         min_size         = number
@@ -63,6 +64,11 @@ variable "concourse_web_conf" {
     max_instance_lifetime = 60 * 60 * 24 * 7
     count                 = 0
     environment_override  = {}
+    rds_conf = {
+      database_username = var.concourse_db_conf.username
+      database_password = var.concourse_db_conf.password
+      github_url = var.github_url
+    }
     asg_scaling_config = {
       night = {
         min_size         = 1
@@ -174,4 +180,16 @@ variable "root_domain" {
   description = "The root DNS domain on which to base the deployment"
   type        = string
   default     = "cicd.aws"
+}
+
+variable "auth_duration" {
+  type        = string
+  description = "Length of time for which tokens are valid. Afterwards, users will have to log back in"
+  default     = "12h"
+}
+
+variable "github_url" {
+  type        = string
+  description = "The URL for the GitHub used for OAuth"
+  default = "github.com"
 }
