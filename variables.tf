@@ -42,7 +42,7 @@ variable "concourse_web_conf" {
     max_instance_lifetime = number
     instance_type         = string
     environment_override  = map(string)
-    rds_conf = map(string)
+    rds_conf              = map(string)
     asg_scaling_config = object({
       night = object({
         min_size         = number
@@ -67,7 +67,7 @@ variable "concourse_web_conf" {
     rds_conf = {
       database_username = var.concourse_db_conf.username
       database_password = var.concourse_db_conf.password
-      github_url = var.github_url
+      github_url        = var.github_url
     }
     asg_scaling_config = {
       night = {
@@ -191,5 +191,5 @@ variable "auth_duration" {
 variable "github_url" {
   type        = string
   description = "The URL for the GitHub used for OAuth"
-  default = "github.com"
+  default     = "github.com"
 }
