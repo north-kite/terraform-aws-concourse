@@ -1,10 +1,10 @@
 resource "aws_autoscaling_group" "concourse_web" {
-  name_prefix = "concourse-web-"
+  name_prefix           = "concourse-web-"
   max_size              = var.concourse_web_conf.count
   min_size              = var.concourse_web_conf.count
   desired_capacity      = var.concourse_web_conf.count
   max_instance_lifetime = var.concourse_web_conf.max_instance_lifetime
-  target_group_arns = [aws_lb_target_group.concourse_web_http.arn]
+  target_group_arns     = [aws_lb_target_group.concourse_web_http.arn]
 
   vpc_zone_identifier = module.vpc.private_subnets
 
@@ -27,7 +27,7 @@ resource "aws_autoscaling_group" "concourse_web" {
 }
 
 resource "aws_autoscaling_group" "worker" {
-  name_prefix             = "concourse-worker-"
+  name_prefix      = "concourse-worker-"
   max_size         = var.concourse_worker_conf.count
   min_size         = var.concourse_worker_conf.count
   desired_capacity = var.concourse_worker_conf.count

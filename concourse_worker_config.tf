@@ -1,11 +1,11 @@
 locals {
-//  logger_bootstrap_file = templatefile(
-//    "${path.module}/templates/logger_bootstrap.sh",
-//    {
-//      cloudwatch_agent_config_ssm_parameter = aws_ssm_parameter.cloudwatch_agent_config_worker.name
-//      https_proxy                           = var.proxy.https_proxy
-//    }
-//  )
+  //  logger_bootstrap_file = templatefile(
+  //    "${path.module}/templates/logger_bootstrap.sh",
+  //    {
+  //      cloudwatch_agent_config_ssm_parameter = aws_ssm_parameter.cloudwatch_agent_config_worker.name
+  //      https_proxy                           = var.proxy.https_proxy
+  //    }
+  //  )
 
   service_env_vars = merge(
     {
@@ -20,14 +20,14 @@ locals {
       CONCOURSE_GARDEN_MAX_CONTAINERS  = var.concourse_worker_conf.garden_max_containers
       CONCOURSE_LOG_LEVEL              = var.concourse_worker_conf.log_level
 
-//      HTTP_PROXY  = var.proxy.http_proxy
-//      HTTPS_PROXY = var.proxy.https_proxy
-//      NO_PROXY    = var.proxy.no_proxy
-//      http_proxy  = var.proxy.http_proxy
-//      https_proxy = var.proxy.https_proxy
-//      no_proxy    = var.proxy.no_proxy
+      //      HTTP_PROXY  = var.proxy.http_proxy
+      //      HTTPS_PROXY = var.proxy.https_proxy
+      //      NO_PROXY    = var.proxy.no_proxy
+      //      http_proxy  = var.proxy.http_proxy
+      //      https_proxy = var.proxy.https_proxy
+      //      no_proxy    = var.proxy.no_proxy
     },
-//    var.worker.environment_override
+    //    var.worker.environment_override
   )
 
   worker_systemd_file = templatefile(
@@ -47,12 +47,12 @@ locals {
   worker_bootstrap_file = templatefile(
     "${path.module}/templates/worker_bootstrap.sh",
     {
-      aws_default_region      = data.aws_region.current.name
-//      http_proxy              = var.proxy.http_proxy
-//      https_proxy             = var.proxy.https_proxy
-//      no_proxy                = var.proxy.no_proxy
-//      enterprise_github_certs = "${join(" ", var.enterprise_github_certs)}"
-      name                    = local.name
+      aws_default_region = data.aws_region.current.name
+      //      http_proxy              = var.proxy.http_proxy
+      //      https_proxy             = var.proxy.https_proxy
+      //      no_proxy                = var.proxy.no_proxy
+      //      enterprise_github_certs = "${join(" ", var.enterprise_github_certs)}"
+      name = local.name
     }
   )
 
@@ -113,9 +113,9 @@ EOF
     content_type = "text/x-shellscript"
     content      = local.worker_bootstrap_file
   }
-//
-//  part {
-//    content_type = "text/x-shellscript"
-//    content      = local.logger_bootstrap_file
-//  }
+  //
+  //  part {
+  //    content_type = "text/x-shellscript"
+  //    content      = local.logger_bootstrap_file
+  //  }
 }

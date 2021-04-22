@@ -83,12 +83,12 @@ variable "concourse_web_conf" {
 variable "concourse_worker_conf" {
   description = "Concourse Worker config options"
   type = object({
-    instance_type        = string
-    count                = number
-    environment_override = map(string)
-    garden_network_pool  = string
+    instance_type         = string
+    count                 = number
+    environment_override  = map(string)
+    garden_network_pool   = string
     garden_max_containers = string
-    log_level            = string
+    log_level             = string
     asg_scaling_config = object({
       night = object({
         min_size         = number
@@ -105,12 +105,12 @@ variable "concourse_worker_conf" {
     })
   })
   default = {
-    instance_type        = "t2.2xlarge"
-    count                = 0
-    environment_override = {}
-    garden_network_pool = "172.16.0.0/21"
+    instance_type         = "t2.2xlarge"
+    count                 = 0
+    environment_override  = {}
+    garden_network_pool   = "172.16.0.0/21"
     garden_max_containers = "350"
-    log_level = "error"
+    log_level             = "error"
     asg_scaling_config = {
       night = {
         min_size         = 1

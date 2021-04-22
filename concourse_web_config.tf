@@ -33,9 +33,9 @@ locals {
 
       # Okta SAML Auth
       CONCOURSE_SAML_DISPLAY_NAME = var.concourse_saml_conf.display_name
-      CONCOURSE_SAML_SSO_URL = var.concourse_saml_conf.url
-      CONCOURSE_SAML_CA_CERT = "/etc/concourse/okta.cert"
-      CONCOURSE_SAML_SSO_ISSUER = var.concourse_saml_conf.issuer
+      CONCOURSE_SAML_SSO_URL      = var.concourse_saml_conf.url
+      CONCOURSE_SAML_CA_CERT      = "/etc/concourse/okta.cert"
+      CONCOURSE_SAML_SSO_ISSUER   = var.concourse_saml_conf.issuer
 
       # UC GitHub Auth
       CONCOURSE_GITHUB_HOST = var.github_url
@@ -89,11 +89,11 @@ locals {
   web_bootstrap_file = templatefile(
     "${path.module}/files/concourse_web/web_bootstrap.sh",
     {
-      aws_default_region = data.aws_region.current.name
-      concourse_version = var.concourse_version
-      concourse_username = var.concourse_sec.concourse_username
-      concourse_password = var.concourse_sec.concourse_password
-      concourse_db_username  = var.concourse_sec.concourse_db_username
+      aws_default_region    = data.aws_region.current.name
+      concourse_version     = var.concourse_version
+      concourse_username    = var.concourse_sec.concourse_username
+      concourse_password    = var.concourse_sec.concourse_password
+      concourse_db_username = var.concourse_sec.concourse_db_username
       concourse_db_password = var.concourse_sec.concourse_db_password
 
       //    http_proxy              = var.proxy.http_proxy
@@ -108,7 +108,7 @@ locals {
     {
       aws_default_region = data.aws_region.current.name
       target             = "aws-concourse"
-      concourse_username     = var.concourse_sec.concourse_username
+      concourse_username = var.concourse_sec.concourse_username
       concourse_password = var.concourse_sec.concourse_password
     }
   )
@@ -224,8 +224,8 @@ EOF
     content      = local.utility
   }
 
-    part {
+  part {
     content_type = "text/plain"
-    content = var.concourse_saml_conf.ca_cert
+    content      = var.concourse_saml_conf.ca_cert
   }
 }
