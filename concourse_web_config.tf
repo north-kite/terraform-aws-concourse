@@ -1,6 +1,6 @@
 locals {
   //  logger_bootstrap_file = templatefile(
-  //  "${path.module}/templates/logger_bootstrap.sh",
+  //  "${path.module}/files/concourse_web/logger_bootstrap.sh",
   //  {
   //    cloudwatch_agent_config_ssm_parameter = aws_ssm_parameter.cloudwatch_agent_config_web.name
   //    https_proxy                           = var.proxy.https_proxy
@@ -11,14 +11,14 @@ locals {
     {
       CONCOURSE_CLUSTER_NAME  = local.name
       CONCOURSE_EXTERNAL_URL  = "https://${local.fqdn}"
-      CONCOURSE_AUTH_DURATION = var.auth_duration
+      CONCOURSE_AUTH_DURATION = var.concourse_sec.concourse_auth_duration
 
       CONCOURSE_POSTGRES_DATABASE = aws_rds_cluster.cluster.database_name
       CONCOURSE_POSTGRES_HOST     = aws_rds_cluster.cluster.endpoint
 
       CONCOURSE_SESSION_SIGNING_KEY = "/etc/concourse/session_signing_key"
       CONCOURSE_TSA_AUTHORIZED_KEYS = "/etc/concourse/authorized_worker_keys"
-      CONCOURSE_TSA_HOST_KEY        = "/etc/concourse/host_key"
+      CONCOURSE_TSA_HOST_KEY        = "/etc/concourse/tsa_host_key"
       CONCOURSE_TSA_LOG_LEVEL       = "error"
       CONCOURSE_LOG_LEVEL           = "error"
 
@@ -31,16 +31,14 @@ locals {
       CONCOURSE_AWS_SECRETSMANAGER_TEAM_SECRET_TEMPLATE     = "/concourse/{{.Team}}/{{.Secret}}"
       CONCOURSE_SECRET_CACHE_DURATION                       = "1m"
 
-      //    # Cognito Auth
-      //    CONCOURSE_OIDC_DISPLAY_NAME  = var.cognito_name
-      //    CONCOURSE_OIDC_CLIENT_ID     = var.cognito_client_id
-      //    CONCOURSE_OIDC_CLIENT_SECRET = var.cognito_client_secret
-      //    CONCOURSE_OIDC_ISSUER        = var.cognito_issuer
-      //    CONCOURSE_OIDC_GROUPS_KEY    = "cognito:groups"
-      //    CONCOURSE_OIDC_USER_NAME_KEY = "cognito:username"
+      # Okta SAML Auth
+      CONCOURSE_SAML_DISPLAY_NAME = var.concourse_saml_conf.display_name
+      CONCOURSE_SAML_SSO_URL = var.concourse_saml_conf.url
+      CONCOURSE_SAML_CA_CERT = "/etc/concourse/okta.cert"
+      CONCOURSE_SAML_SSO_ISSUER = var.concourse_saml_conf.issuer
 
       # UC GitHub Auth
-      CONCOURSE_GITHUB_HOST = var.concourse_web_conf.rds_conf.github_url
+      CONCOURSE_GITHUB_HOST = var.github_url
 
       CONCOURSE_METRICS_HOST_NAME     = local.name
       CONCOURSE_CAPTURE_ERROR_METRICS = true
@@ -69,7 +67,7 @@ locals {
   )
 
   web_systemd_file = templatefile(
-    "${path.module}/templates/web_systemd",
+    "${path.module}/files/concourse_web/web_systemd",
     {
       environment_vars = merge(local.service_env_vars,
         {
@@ -79,7 +77,7 @@ locals {
   )
 
   web_upstart_file = templatefile(
-    "${path.module}/templates/web_upstart",
+    "${path.module}/files/concourse_web/web_upstart",
     {
       environment_vars = merge(local.service_env_vars,
         {
@@ -89,9 +87,15 @@ locals {
   )
 
   web_bootstrap_file = templatefile(
-    "${path.module}/templates/web_bootstrap.sh",
+    "${path.module}/files/concourse_web/web_bootstrap.sh",
     {
       aws_default_region = data.aws_region.current.name
+      concourse_version = var.concourse_version
+      concourse_username = var.concourse_sec.concourse_username
+      concourse_password = var.concourse_sec.concourse_password
+      concourse_db_username  = var.concourse_sec.concourse_db_username
+      concourse_db_password = var.concourse_sec.concourse_db_password
+
       //    http_proxy              = var.proxy.http_proxy
       //    https_proxy             = var.proxy.https_proxy
       //    no_proxy                = var.proxy.no_proxy
@@ -100,28 +104,29 @@ locals {
   )
 
   teams = templatefile(
-    "${path.module}/templates/teams.sh",
+    "${path.module}/files/concourse_web/teams.sh",
     {
       aws_default_region = data.aws_region.current.name
-      target             = "aws-concourse" // not sure what this should be atm
+      target             = "aws-concourse"
+      concourse_username     = var.concourse_sec.concourse_username
+      concourse_password = var.concourse_sec.concourse_password
     }
   )
 
   teams_config = templatefile(
-    "${path.module}/templates/teams/default/team.yml",
+    "${path.module}/files/concourse_web/teams/default/team.yml",
     {}
   )
 
   identity = templatefile(
-    "${path.module}/templates/teams/identity/team.yml",
+    "${path.module}/files/concourse_web/teams/identity/team.yml",
     {}
   )
 
   utility = templatefile(
-    "${path.module}/templates/teams/utility/team.yml",
+    "${path.module}/files/concourse_web/teams/utility/team.yml",
     {}
   )
-
 }
 
 data "template_cloudinit_config" "web_bootstrap" {
@@ -169,7 +174,7 @@ write_files:
   - encoding: b64
     content: ${base64encode(local.teams_config)}
     owner: root:root
-    path: /root/teams/dataworks/team.yml
+    path: /root/teams/default/team.yml
     permissions: '0600'
   - encoding: b64
     content: ${base64encode(local.identity)}
@@ -180,6 +185,11 @@ write_files:
     content: ${base64encode(local.utility)}
     owner: root:root
     path: /root/teams/utility/team.yml
+    permissions: '0600'
+  - encoding: b64
+    content: ${base64encode(var.concourse_saml_conf.ca_cert)}
+    owner: root:root
+    path: /etc/concourse/okta.cert
     permissions: '0600'
 EOF
   }
@@ -212,5 +222,10 @@ EOF
   part {
     content_type = "text/plain"
     content      = local.utility
+  }
+
+    part {
+    content_type = "text/plain"
+    content = var.concourse_saml_conf.ca_cert
   }
 }

@@ -24,8 +24,8 @@ resource "aws_rds_cluster" "cluster" {
   engine_version            = var.concourse_db_conf.engine_version
   availability_zones        = local.zone_names
   database_name             = local.name
-  master_username           = var.concourse_db_conf.username
-  master_password           = var.concourse_db_conf.password
+  master_username           = var.concourse_sec.concourse_db_username
+  master_password           = var.concourse_sec.concourse_db_password
   backup_retention_period   = 14
   preferred_backup_window   = var.concourse_db_conf.preferred_backup_window
   apply_immediately         = true

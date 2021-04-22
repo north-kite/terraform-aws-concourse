@@ -5,9 +5,9 @@ resource "aws_launch_template" "concourse_worker" {
   instance_initiated_shutdown_behavior = "terminate"
   tags                                 = merge(local.common_tags, { Name = local.name })
 
-  user_data = templatefile("${path.module}/files/concourse_worker/userdata.tf2", {
-    env = local.environment
-  })
+//  user_data = templatefile("${path.module}/files/concourse_worker/userdata.tf2", {
+//    env = local.environment
+//  })
 
   block_device_mappings {
     device_name = "/dev/xvda"
@@ -45,7 +45,8 @@ resource "aws_launch_template" "concourse_worker" {
     delete_on_termination       = true
 
     security_groups = [
-      aws_security_group.concourse_worker.id
+      aws_security_group.concourse_worker.id,
+      aws_security_group.concourse_vpc_endpoints.id
     ]
   }
 
