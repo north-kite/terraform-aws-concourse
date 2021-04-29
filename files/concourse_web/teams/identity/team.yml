@@ -1,0 +1,6 @@
+roles:
+  - name: viewer
+    oidc:
+      groups: ["default"]
+    github:
+      teams: ["team:default"]

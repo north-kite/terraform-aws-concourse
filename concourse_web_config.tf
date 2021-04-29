@@ -1,0 +1,237 @@
+locals {
+  //  logger_bootstrap_file = templatefile(
+  //  "${path.module}/files/concourse_web/logger_bootstrap.sh",
+  //  {
+  //    cloudwatch_agent_config_ssm_parameter = aws_ssm_parameter.cloudwatch_agent_config_web.name
+  //    https_proxy                           = var.proxy.https_proxy
+  //  }
+  //  )
+
+  web_service_env_vars = merge(
+    {
+      CONCOURSE_CLUSTER_NAME  = local.name
+      CONCOURSE_EXTERNAL_URL  = "https://${local.fqdn}"
+      CONCOURSE_AUTH_DURATION = var.concourse_sec.concourse_auth_duration
+
+      CONCOURSE_POSTGRES_DATABASE = aws_rds_cluster.cluster.database_name
+      CONCOURSE_POSTGRES_HOST     = aws_rds_cluster.cluster.endpoint
+
+      CONCOURSE_SESSION_SIGNING_KEY = "/etc/concourse/session_signing_key"
+      CONCOURSE_TSA_AUTHORIZED_KEYS = "/etc/concourse/authorized_worker_keys"
+      CONCOURSE_TSA_HOST_KEY        = "/etc/concourse/tsa_host_key"
+      CONCOURSE_TSA_LOG_LEVEL       = "error"
+      CONCOURSE_LOG_LEVEL           = "error"
+
+      #TODO: Setup Monitoring !10
+      CONCOURSE_PROMETHEUS_BIND_IP   = "0.0.0.0"
+      CONCOURSE_PROMETHEUS_BIND_PORT = 9090
+
+      CONCOURSE_AWS_SECRETSMANAGER_REGION                   = data.aws_region.current.name
+      CONCOURSE_AWS_SECRETSMANAGER_PIPELINE_SECRET_TEMPLATE = "/concourse/{{.Team}}/{{.Pipeline}}/{{.Secret}}"
+      CONCOURSE_AWS_SECRETSMANAGER_TEAM_SECRET_TEMPLATE     = "/concourse/{{.Team}}/{{.Secret}}"
+      CONCOURSE_SECRET_CACHE_DURATION                       = "1m"
+
+      # Okta SAML Auth
+      CONCOURSE_SAML_DISPLAY_NAME = var.concourse_saml_conf.display_name
+      CONCOURSE_SAML_SSO_URL      = var.concourse_saml_conf.url
+      CONCOURSE_SAML_CA_CERT      = "/etc/concourse/okta.cert"
+      CONCOURSE_SAML_SSO_ISSUER   = var.concourse_saml_conf.issuer
+
+      # UC GitHub Auth
+      CONCOURSE_GITHUB_HOST = var.github_url
+
+      CONCOURSE_METRICS_HOST_NAME     = local.name
+      CONCOURSE_CAPTURE_ERROR_METRICS = true
+
+      #TODO: Audit logging
+      CONCOURSE_ENABLE_BUILD_AUDITING     = true
+      CONCOURSE_ENABLE_CONTAINER_AUDITING = true
+      CONCOURSE_ENABLE_JOB_AUDITING       = true
+      CONCOURSE_ENABLE_PIPELINE_AUDITING  = true
+      CONCOURSE_ENABLE_RESOURCE_AUDITING  = true
+      CONCOURSE_ENABLE_SYSTEM_AUDITING    = true
+      CONCOURSE_ENABLE_TEAM_AUDITING      = true
+      CONCOURSE_ENABLE_WORKER_AUDITING    = true
+      CONCOURSE_ENABLE_VOLUME_AUDITING    = true
+
+      CONCOURSE_CONTAINER_PLACEMENT_STRATEGY = "random"
+
+      //    HTTP_PROXY  = var.proxy.http_proxy
+      //    HTTPS_PROXY = var.proxy.https_proxy
+      //    NO_PROXY    = var.proxy.no_proxy
+      //    http_proxy  = var.proxy.http_proxy
+      //    https_proxy = var.proxy.https_proxy
+      //    no_proxy    = var.proxy.no_proxy
+    },
+    //  var.web.environment_override
+  )
+
+  web_systemd_file = templatefile(
+    "${path.module}/files/concourse_web/web_systemd",
+    {
+      environment_vars = merge(local.web_service_env_vars,
+        {
+          CONCOURSE_PEER_ADDRESS = "127.0.0.1"
+      })
+    }
+  )
+
+  web_upstart_file = templatefile(
+    "${path.module}/files/concourse_web/web_upstart",
+    {
+      environment_vars = merge(local.web_service_env_vars,
+        {
+          CONCOURSE_PEER_ADDRESS = "$HOSTNAME"
+      })
+    }
+  )
+
+  web_bootstrap_file = templatefile(
+    "${path.module}/files/concourse_web/web_bootstrap.sh",
+    {
+      aws_default_region                     = data.aws_region.current.name
+      concourse_version                      = var.concourse_version
+      concourse_username                     = var.concourse_sec.concourse_username
+      concourse_password                     = var.concourse_sec.concourse_password
+      concourse_db_username                  = var.concourse_sec.concourse_db_username
+      concourse_db_password                  = var.concourse_sec.concourse_db_password
+      session_signing_key_public_secret_arn  = var.concourse_sec.session_signing_key_public_secret_arn
+      session_signing_key_private_secret_arn = var.concourse_sec.session_signing_key_private_secret_arn
+      tsa_host_key_private_secret_arn        = var.concourse_sec.tsa_host_key_private_secret_arn
+      tsa_host_key_public_secret_arn         = var.concourse_sec.tsa_host_key_public_secret_arn
+      worker_key_private_secret_arn          = var.concourse_sec.worker_key_private_secret_arn
+      worker_key_public_secret_arn           = var.concourse_sec.worker_key_public_secret_arn
+
+      //    http_proxy              = var.proxy.http_proxy
+      //    https_proxy             = var.proxy.https_proxy
+      //    no_proxy                = var.proxy.no_proxy
+      //    enterprise_github_certs = join(" ", var.enterprise_github_certs)
+    }
+  )
+
+  teams = templatefile(
+    "${path.module}/files/concourse_web/teams.sh",
+    {
+      aws_default_region = data.aws_region.current.name
+      target             = "aws-concourse"
+      concourse_username = var.concourse_sec.concourse_username
+      concourse_password = var.concourse_sec.concourse_password
+    }
+  )
+
+  teams_config = templatefile(
+    "${path.module}/files/concourse_web/teams/default/team.yml",
+    {}
+  )
+
+  identity = templatefile(
+    "${path.module}/files/concourse_web/teams/identity/team.yml",
+    {}
+  )
+
+  utility = templatefile(
+    "${path.module}/files/concourse_web/teams/utility/team.yml",
+    {}
+  )
+}
+
+data "template_cloudinit_config" "web_bootstrap" {
+  gzip          = true
+  base64_encode = true
+
+  part {
+    content_type = "text/cloud-config"
+    content      = "package_update: true"
+  }
+
+  part {
+    content_type = "text/cloud-config"
+    content      = "package_upgrade: true"
+  }
+
+  part {
+    content_type = "text/cloud-config"
+    content      = <<EOF
+packages:
+  - aws-cli
+  - jq
+EOF
+  }
+
+  part {
+    content_type = "text/cloud-config"
+    content      = <<EOF
+write_files:
+  - encoding: b64
+    content: ${base64encode(local.web_upstart_file)}
+    owner: root:root
+    path: /etc/init/concourse-web.conf
+    permissions: '0644'
+  - encoding: b64
+    content: ${base64encode(local.web_systemd_file)}
+    owner: root:root
+    path: /etc/systemd/system/concourse-web.service
+    permissions: '0644'
+  - encoding: b64
+    content: ${base64encode(local.teams)}
+    owner: root:root
+    path: /root/teams.sh
+    permissions: '0700'
+  - encoding: b64
+    content: ${base64encode(local.teams_config)}
+    owner: root:root
+    path: /root/teams/default/team.yml
+    permissions: '0600'
+  - encoding: b64
+    content: ${base64encode(local.identity)}
+    owner: root:root
+    path: /root/teams/identity/team.yml
+    permissions: '0600'
+  - encoding: b64
+    content: ${base64encode(local.utility)}
+    owner: root:root
+    path: /root/teams/utility/team.yml
+    permissions: '0600'
+  - encoding: b64
+    content: ${base64encode(var.concourse_saml_conf.ca_cert)}
+    owner: root:root
+    path: /etc/concourse/okta.cert
+    permissions: '0600'
+EOF
+  }
+
+  part {
+    content_type = "text/x-shellscript"
+    content      = local.web_bootstrap_file
+  }
+
+  //  part {
+  //    content_type = "text/x-shellscript"
+  //    content      = local.logger_bootstrap_file
+  //  }
+
+  part {
+    content_type = "text/x-shellscript"
+    content      = local.teams
+  }
+
+  part {
+    content_type = "text/plain"
+    content      = local.teams_config
+  }
+
+  part {
+    content_type = "text/plain"
+    content      = local.identity
+  }
+
+  part {
+    content_type = "text/plain"
+    content      = local.utility
+  }
+
+  part {
+    content_type = "text/plain"
+    content      = var.concourse_saml_conf.ca_cert
+  }
+}

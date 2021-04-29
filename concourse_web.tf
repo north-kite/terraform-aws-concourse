@@ -4,9 +4,7 @@ resource "aws_launch_template" "concourse_web" {
   instance_type                        = var.concourse_web_conf.instance_type
   instance_initiated_shutdown_behavior = "terminate"
 
-  user_data = templatefile("${path.module}/files/concourse_web/userdata.tf2", {
-    env = local.environment
-  })
+  user_data = data.template_cloudinit_config.web_bootstrap.rendered
 
   block_device_mappings {
     device_name = "/dev/xvda"
@@ -49,7 +47,8 @@ resource "aws_launch_template" "concourse_web" {
     delete_on_termination       = true
 
     security_groups = [
-      aws_security_group.concourse_web.id
+      aws_security_group.concourse_web.id,
+      aws_security_group.concourse_vpc_endpoints.id,
     ]
   }
 

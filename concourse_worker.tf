@@ -3,11 +3,11 @@ resource "aws_launch_template" "concourse_worker" {
   image_id                             = var.ami_id
   instance_type                        = var.concourse_worker_conf.instance_type
   instance_initiated_shutdown_behavior = "terminate"
-  tags                                 = merge(local.common_tags, { Name = local.name })
 
-  user_data = templatefile("${path.module}/files/concourse_worker/userdata.tf2", {
-    env = local.environment
-  })
+
+  //  user_data = templatefile("${path.module}/files/concourse_worker/userdata.tf2", {
+  //    env = local.environment
+  //  })
 
   block_device_mappings {
     device_name = "/dev/xvda"
@@ -30,14 +30,19 @@ resource "aws_launch_template" "concourse_worker" {
     arn = aws_iam_instance_profile.concourse_worker.arn
   }
 
+  tags = merge(
+    local.common_tags,
+    { Name = "${local.environment}-concourse-worker" }
+  )
+
   tag_specifications {
     resource_type = "instance"
-    tags          = merge(local.common_tags, { Name = local.name })
+    tags          = merge(local.common_tags, { Name = "${local.environment}-concourse-worker" })
   }
 
   tag_specifications {
     resource_type = "volume"
-    tags          = merge(local.common_tags, { Name = local.name })
+    tags          = merge(local.common_tags, { Name = "${local.environment}-concourse-worker" })
   }
 
   network_interfaces {
@@ -45,7 +50,8 @@ resource "aws_launch_template" "concourse_worker" {
     delete_on_termination       = true
 
     security_groups = [
-      aws_security_group.concourse_worker.id
+      aws_security_group.concourse_worker.id,
+      aws_security_group.concourse_vpc_endpoints.id,
     ]
   }
 

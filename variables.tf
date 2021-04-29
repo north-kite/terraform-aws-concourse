@@ -59,9 +59,9 @@ variable "concourse_web_conf" {
   })
 
   default = {
-    instance_type         = "t3.micro"
+    instance_type         = "t2.2xlarge"
     max_instance_lifetime = 60 * 60 * 24 * 7
-    count                 = 0
+    count                 = 1
     environment_override  = {}
     asg_scaling_config = {
       night = {
@@ -83,9 +83,12 @@ variable "concourse_web_conf" {
 variable "concourse_worker_conf" {
   description = "Concourse Worker config options"
   type = object({
-    instance_type        = string
-    count                = number
-    environment_override = map(string)
+    instance_type         = string
+    count                 = number
+    environment_override  = map(string)
+    garden_network_pool   = string
+    garden_max_containers = string
+    log_level             = string
     asg_scaling_config = object({
       night = object({
         min_size         = number
@@ -102,9 +105,12 @@ variable "concourse_worker_conf" {
     })
   })
   default = {
-    instance_type        = "t3.micro"
-    count                = 0
-    environment_override = {}
+    instance_type         = "t2.2xlarge"
+    count                 = 3
+    environment_override  = {}
+    garden_network_pool   = "172.16.0.0/21"
+    garden_max_containers = "350"
+    log_level             = "error"
     asg_scaling_config = {
       night = {
         min_size         = 1
@@ -132,8 +138,6 @@ variable "concourse_db_conf" {
     engine_version          = string
     backup_retention_period = number
     preferred_backup_window = string
-    username                = string
-    password                = string
   })
 
   default = {
@@ -143,8 +147,6 @@ variable "concourse_db_conf" {
     engine_version          = "10.11"
     backup_retention_period = 14
     preferred_backup_window = "01:00-03:00"
-    username                = "concourseadmin"
-    password                = "4dm1n15strator" // TODO: Change this
   }
 }
 
@@ -174,4 +176,67 @@ variable "root_domain" {
   description = "The root DNS domain on which to base the deployment"
   type        = string
   default     = "cicd.aws"
+}
+
+variable "github_url" {
+  type        = string
+  description = "The URL for the GitHub used for OAuth"
+  default     = "github.com"
+}
+
+variable "concourse_version" {
+  type        = string
+  description = "The Concourse version to deploy"
+  default     = "7.2.0"
+}
+
+
+variable "concourse_sec" {
+  description = "Concourse Security Config"
+
+  type = object({
+    concourse_username                     = string
+    concourse_password                     = string
+    concourse_auth_duration                = string
+    concourse_db_username                  = string
+    concourse_db_password                  = string
+    session_signing_key_public_secret_arn  = string
+    session_signing_key_private_secret_arn = string
+    tsa_host_key_private_secret_arn        = string
+    tsa_host_key_public_secret_arn         = string
+    worker_key_private_secret_arn          = string
+    worker_key_public_secret_arn           = string
+  })
+
+  default = {
+    concourse_username                     = "concourseadmin"
+    concourse_password                     = "concoursePassword123!"
+    concourse_auth_duration                = "12h"
+    concourse_db_username                  = "concourseadmin"
+    concourse_db_password                  = "4dm1n15strator"
+    session_signing_key_public_secret_arn  = "ARN_NOT_SET"
+    session_signing_key_private_secret_arn = "ARN_NOT_SET"
+    tsa_host_key_private_secret_arn        = "ARN_NOT_SET"
+    tsa_host_key_public_secret_arn         = "ARN_NOT_SET"
+    worker_key_private_secret_arn          = "ARN_NOT_SET"
+    worker_key_public_secret_arn           = "ARN_NOT_SET"
+  }
+}
+
+variable "concourse_saml_conf" {
+  description = "Concourse SAML config for e.g. Okta"
+
+  type = object({
+    display_name = string
+    url          = string
+    ca_cert      = string
+    issuer       = string
+  })
+
+  default = {
+    display_name = ""
+    url          = ""
+    ca_cert      = ""
+    issuer       = ""
+  }
 }

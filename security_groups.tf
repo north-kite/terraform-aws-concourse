@@ -34,6 +34,26 @@ resource "aws_security_group" "concourse_db" {
   tags   = merge(local.common_tags, { Name = "${local.name}-db" })
 }
 
+resource "aws_security_group" "concourse_vpc_endpoints" {
+  name        = "ConcourseVPCEndpoints"
+  description = "Concourse VPC Endpoints"
+  vpc_id      = module.vpc.vpc_id
+  tags        = merge(local.common_tags, { Name = local.name })
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_security_group_rule" "internal_ssh_from_bastion_egress" {
+  from_port                = 22
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.concourse_vpc_endpoints.id
+  to_port                  = 22
+  type                     = "ingress"
+  security_group_id        = aws_security_group.concourse_web.id
+}
+
 resource "aws_security_group_rule" "lb_external_https_in" {
   description       = "enable inbound connectivity from whitelisted endpoints"
   type              = "ingress"
@@ -92,6 +112,16 @@ resource "aws_security_group_rule" "web_internal_out_tcp" {
   to_port                  = 65535
   security_group_id        = aws_security_group.concourse_web.id
   source_security_group_id = aws_security_group.concourse_web.id
+}
+
+resource "aws_security_group_rule" "web_internal_out_all" {
+  description       = "web_internal_out_all"
+  type              = "egress"
+  protocol          = "all"
+  from_port         = 0
+  to_port           = 65535
+  security_group_id = aws_security_group.concourse_web.id
+  cidr_blocks       = ["0.0.0.0/0"]
 }
 
 resource "aws_security_group_rule" "web_lb_in_ssh" {
