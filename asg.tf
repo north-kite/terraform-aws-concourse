@@ -25,7 +25,7 @@ resource "aws_autoscaling_group" "concourse_web" {
 }
 
 resource "aws_autoscaling_group" "worker" {
-  depends_on = [aws_autoscaling_group.concourse_web]
+  depends_on       = [aws_autoscaling_group.concourse_web]
   name_prefix      = "concourse-worker-"
   max_size         = var.concourse_worker_conf.count
   min_size         = var.concourse_worker_conf.count
