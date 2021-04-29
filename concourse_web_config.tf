@@ -89,18 +89,18 @@ locals {
   web_bootstrap_file = templatefile(
     "${path.module}/files/concourse_web/web_bootstrap.sh",
     {
-      aws_default_region    = data.aws_region.current.name
-      concourse_version     = var.concourse_version
-      concourse_username    = var.concourse_sec.concourse_username
-      concourse_password    = var.concourse_sec.concourse_password
-      concourse_db_username = var.concourse_sec.concourse_db_username
-      concourse_db_password = var.concourse_sec.concourse_db_password
-      session_signing_key_public_secret_arn = var.concourse_sec.session_signing_key_public_secret_arn
+      aws_default_region                     = data.aws_region.current.name
+      concourse_version                      = var.concourse_version
+      concourse_username                     = var.concourse_sec.concourse_username
+      concourse_password                     = var.concourse_sec.concourse_password
+      concourse_db_username                  = var.concourse_sec.concourse_db_username
+      concourse_db_password                  = var.concourse_sec.concourse_db_password
+      session_signing_key_public_secret_arn  = var.concourse_sec.session_signing_key_public_secret_arn
       session_signing_key_private_secret_arn = var.concourse_sec.session_signing_key_private_secret_arn
-      tsa_host_key_private_secret_arn = var.concourse_sec.tsa_host_key_private_secret_arn
-      tsa_host_key_public_secret_arn = var.concourse_sec.tsa_host_key_public_secret_arn
-      worker_key_private_secret_arn = var.concourse_sec.worker_key_private_secret_arn
-      worker_key_public_secret_arn = var.concourse_sec.worker_key_public_secret_arn
+      tsa_host_key_private_secret_arn        = var.concourse_sec.tsa_host_key_private_secret_arn
+      tsa_host_key_public_secret_arn         = var.concourse_sec.tsa_host_key_public_secret_arn
+      worker_key_private_secret_arn          = var.concourse_sec.worker_key_private_secret_arn
+      worker_key_public_secret_arn           = var.concourse_sec.worker_key_public_secret_arn
 
       //    http_proxy              = var.proxy.http_proxy
       //    https_proxy             = var.proxy.https_proxy

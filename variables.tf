@@ -195,31 +195,31 @@ variable "concourse_sec" {
   description = "Concourse Security Config"
 
   type = object({
-    concourse_username      = string
-    concourse_password      = string
-    concourse_auth_duration = string
-    concourse_db_username   = string
-    concourse_db_password   = string
-    session_signing_key_public_secret_arn = string
+    concourse_username                     = string
+    concourse_password                     = string
+    concourse_auth_duration                = string
+    concourse_db_username                  = string
+    concourse_db_password                  = string
+    session_signing_key_public_secret_arn  = string
     session_signing_key_private_secret_arn = string
-    tsa_host_key_private_secret_arn = string
-    tsa_host_key_public_secret_arn = string
-    worker_key_private_secret_arn = string
-    worker_key_public_secret_arn = string
+    tsa_host_key_private_secret_arn        = string
+    tsa_host_key_public_secret_arn         = string
+    worker_key_private_secret_arn          = string
+    worker_key_public_secret_arn           = string
   })
 
   default = {
-    concourse_username      = "concourseadmin"
-    concourse_password      = "concoursePassword123!"
-    concourse_auth_duration = "12h"
-    concourse_db_username   = "concourseadmin"
-    concourse_db_password   = "4dm1n15strator"
-    session_signing_key_public_secret_arn = "ARN_NOT_SET"
+    concourse_username                     = "concourseadmin"
+    concourse_password                     = "concoursePassword123!"
+    concourse_auth_duration                = "12h"
+    concourse_db_username                  = "concourseadmin"
+    concourse_db_password                  = "4dm1n15strator"
+    session_signing_key_public_secret_arn  = "ARN_NOT_SET"
     session_signing_key_private_secret_arn = "ARN_NOT_SET"
-    tsa_host_key_private_secret_arn = "ARN_NOT_SET"
-    tsa_host_key_public_secret_arn = "ARN_NOT_SET"
-    worker_key_private_secret_arn = "ARN_NOT_SET"
-    worker_key_public_secret_arn = "ARN_NOT_SET"
+    tsa_host_key_private_secret_arn        = "ARN_NOT_SET"
+    tsa_host_key_public_secret_arn         = "ARN_NOT_SET"
+    worker_key_private_secret_arn          = "ARN_NOT_SET"
+    worker_key_public_secret_arn           = "ARN_NOT_SET"
   }
 }
 

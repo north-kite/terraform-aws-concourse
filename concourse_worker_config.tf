@@ -47,9 +47,9 @@ locals {
   worker_bootstrap_file = templatefile(
     "${path.module}/files/concourse_worker/worker_bootstrap.sh",
     {
-      aws_default_region = data.aws_region.current.name
+      aws_default_region             = data.aws_region.current.name
       tsa_host_key_public_secret_arn = var.concourse_sec.tsa_host_key_public_secret_arn
-      worker_key_private_secret_arn = var.concourse_sec.worker_key_private_secret_arn
+      worker_key_private_secret_arn  = var.concourse_sec.worker_key_private_secret_arn
       //      http_proxy              = var.proxy.http_proxy
       //      https_proxy             = var.proxy.https_proxy
       //      no_proxy                = var.proxy.no_proxy
