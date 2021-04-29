@@ -6,7 +6,6 @@ locals {
   zone_names  = data.aws_availability_zones.current.names
 
   common_tags = {
-    Name        = local.name
     Environment = local.environment
     Application = local.name
     Terraform   = "true"

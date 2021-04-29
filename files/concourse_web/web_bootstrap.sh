@@ -9,12 +9,12 @@ export CONCOURSE_PASSWORD=${concourse_password}
 mkdir -p /etc/concourse
 
 # Obtain keys from AWS Secrets Manager
-aws secretsmanager get-secret-value --secret-id ${session_signing_key_private_secret_arn} --query SecretBinary --output text | base64 -d > /etc/concourse/session_signing_key
-aws secretsmanager get-secret-value --secret-id ${session_signing_key_public_secret_arn} --query SecretBinary --output text | base64 -d > /etc/concourse/session_signing_key.pub
-aws secretsmanager get-secret-value --secret-id ${tsa_host_key_private_secret_arn} --query SecretBinary --output text | base64 -d > /etc/concourse/tsa_host_key
-aws secretsmanager get-secret-value --secret-id ${tsa_host_key_public_secret_arn} --query SecretBinary --output text | base64 -d > /etc/concourse/tsa_host_key.pub
-aws secretsmanager get-secret-value --secret-id ${worker_key_private_secret_arn} --query SecretBinary --output text | base64 -d > /etc/concourse/worker_key
-aws secretsmanager get-secret-value --secret-id ${worker_key_public_secret_arn} --query SecretBinary --output text | base64 -d > /etc/concourse/worker_key.pub
+aws secretsmanager get-secret-value --secret-id ${session_signing_key_private_secret_arn} --query SecretString --output text > /etc/concourse/session_signing_key
+aws secretsmanager get-secret-value --secret-id ${session_signing_key_public_secret_arn} --query SecretString --output text  > /etc/concourse/session_signing_key.pub
+aws secretsmanager get-secret-value --secret-id ${tsa_host_key_private_secret_arn} --query SecretString --output text > /etc/concourse/tsa_host_key
+aws secretsmanager get-secret-value --secret-id ${tsa_host_key_public_secret_arn} --query SecretString --output text > /etc/concourse/tsa_host_key.pub
+aws secretsmanager get-secret-value --secret-id ${worker_key_private_secret_arn} --query SecretString --output text > /etc/concourse/worker_key
+aws secretsmanager get-secret-value --secret-id ${worker_key_public_secret_arn} --query SecretString --output text > /etc/concourse/worker_key.pub
 cp /etc/concourse/worker_key.pub /etc/concourse/authorized_worker_keys
 
 
