@@ -72,7 +72,7 @@ data "aws_iam_policy_document" "concourse_web_secrets_manager" {
       var.concourse_sec.tsa_host_key_private_secret_arn,
       var.concourse_sec.tsa_host_key_public_secret_arn,
       var.concourse_sec.worker_key_private_secret_arn,
-      var.concourse_sec.worker_key_public_secret_arn
+      var.concourse_sec.worker_key_public_secret_arn,
     ]
   }
 }
@@ -90,22 +90,18 @@ resource "aws_iam_policy" "concourse_worker_secrets_manager" {
 
 data "aws_iam_policy_document" "concourse_worker_secrets_manager" {
   statement {
-    actions = [
-      "secretsmanager:GetSecretValue"
-    ]
+    actions = ["secretsmanager:GetSecretValue"]
 
     resources = [
       var.concourse_sec.tsa_host_key_public_secret_arn,
-      var.concourse_sec.worker_key_private_secret_arn
+      var.concourse_sec.worker_key_private_secret_arn,
     ]
   }
 }
 
 data "aws_iam_policy_document" "concourse_web" {
   statement {
-    actions = [
-      "sts:AssumeRole",
-    ]
+    actions = ["sts:AssumeRole"]
 
     principals {
       type        = "Service"
@@ -116,9 +112,7 @@ data "aws_iam_policy_document" "concourse_web" {
 
 data "aws_iam_policy_document" "concourse_worker" {
   statement {
-    actions = [
-      "sts:AssumeRole",
-    ]
+    actions = ["sts:AssumeRole"]
 
     principals {
       type        = "Service"
@@ -129,13 +123,9 @@ data "aws_iam_policy_document" "concourse_worker" {
 
 data "aws_iam_policy_document" "concourse_worker_autoscaling" {
   statement {
-    actions = [
-      "autoscaling:SetInstanceHealth"
-    ]
+    actions = ["autoscaling:SetInstanceHealth"]
 
-    resources = [
-      aws_autoscaling_group.worker.arn
-    ]
+    resources = [aws_autoscaling_group.worker.arn]
   }
 }
 

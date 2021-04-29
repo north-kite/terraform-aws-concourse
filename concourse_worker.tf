@@ -37,12 +37,12 @@ resource "aws_launch_template" "concourse_worker" {
 
   tag_specifications {
     resource_type = "instance"
-    tags          = merge(local.common_tags, { Name = local.name })
+    tags          = merge(local.common_tags, { Name = "${local.environment}-concourse-worker" })
   }
 
   tag_specifications {
     resource_type = "volume"
-    tags          = merge(local.common_tags, { Name = local.name })
+    tags          = merge(local.common_tags, { Name = "${local.environment}-concourse-worker" })
   }
 
   network_interfaces {
@@ -51,7 +51,7 @@ resource "aws_launch_template" "concourse_worker" {
 
     security_groups = [
       aws_security_group.concourse_worker.id,
-      aws_security_group.concourse_vpc_endpoints.id
+      aws_security_group.concourse_vpc_endpoints.id,
     ]
   }
 

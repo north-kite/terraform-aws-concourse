@@ -44,7 +44,9 @@ resource "aws_lb_listener_rule" "concourse_https" {
 
   condition {
     host_header {
-      values = [local.fqdn]
+      values = [
+        local.fqdn
+      ]
     }
   }
 }

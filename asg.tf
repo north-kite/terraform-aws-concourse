@@ -20,9 +20,7 @@ resource "aws_autoscaling_group" "concourse_web" {
 
   lifecycle {
     create_before_destroy = true
-    ignore_changes = [
-      max_size
-    ]
+    ignore_changes        = [max_size]
   }
 }
 
@@ -61,7 +59,7 @@ resource "aws_autoscaling_group" "worker" {
     "GroupTerminatingCapacity",
     "GroupTerminatingInstances",
     "GroupTotalCapacity",
-    "GroupTotalInstances"
+    "GroupTotalInstances",
   ]
 
 }
@@ -112,9 +110,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_high" {
   statistic           = "Average"
   threshold           = "90"
   alarm_description   = "This metric monitors ec2 cpu for high utilization on web nodes"
-  alarm_actions = [
-    aws_autoscaling_policy.concourse_web_scale_up.arn
-  ]
+  alarm_actions       = [aws_autoscaling_policy.concourse_web_scale_up.arn]
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.concourse_web.name
   }
@@ -130,9 +126,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-low" {
   statistic           = "Average"
   threshold           = "10"
   alarm_description   = "This metric monitors ec2 cpu for low utilization on agent hosts"
-  alarm_actions = [
-    aws_autoscaling_policy.concourse_web_scale_down.arn
-  ]
+  alarm_actions       = [aws_autoscaling_policy.concourse_web_scale_down.arn]
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.concourse_web.name
   }

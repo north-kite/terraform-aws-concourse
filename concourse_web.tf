@@ -3,7 +3,6 @@ resource "aws_launch_template" "concourse_web" {
   image_id                             = var.ami_id
   instance_type                        = var.concourse_web_conf.instance_type
   instance_initiated_shutdown_behavior = "terminate"
-  key_name                             = "concourse"
 
   user_data = data.template_cloudinit_config.web_bootstrap.rendered
 
@@ -49,7 +48,7 @@ resource "aws_launch_template" "concourse_web" {
 
     security_groups = [
       aws_security_group.concourse_web.id,
-      aws_security_group.concourse_vpc_endpoints.id
+      aws_security_group.concourse_vpc_endpoints.id,
     ]
   }
 
