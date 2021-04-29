@@ -9,23 +9,14 @@ export INSTANCE_ID=$(curl -H "X-aws-ec2-metadata-token:$TOKEN" -s http://169.254
 export AWS_AZ=$(curl -H "X-aws-ec2-metadata-token:$TOKEN" -s http://169.254.169.254/latest/dynamic/instance-identity/document|grep availabilityZone|awk -F\" '{print $4}')
 export HOSTNAME=${name}-$AWS_AZ-$UUID
 
+mkdir -p /etc/concourse
+
+# Obtain keys from AWS Secrets Manager
+aws secretsmanager get-secret-value --secret-id ${tsa_host_key_public_secret_arn} --query SecretBinary --output text | base64 -d > /etc/concourse/tsa_host_key.pub
+aws secretsmanager get-secret-value --secret-id ${worker_key_private_secret_arn} --query SecretBinary --output text | base64 -d > /etc/concourse/worker_key
+
 hostnamectl set-hostname $HOSTNAME
 aws ec2 create-tags --resources $INSTANCE_ID --tags Key=Name,Value=$HOSTNAME
-
-
-mkdir /etc/concourse
-
-aws secretsmanager get-secret-value --secret-id /concourse/dataworks/dataworks-secrets --query SecretBinary --output text | base64 -d | jq -r .tsa_host_pub_key > /etc/concourse/tsa_host_key.pub
-aws secretsmanager get-secret-value --secret-id /concourse/dataworks/dataworks-secrets --query SecretBinary --output text | base64 -d | jq -r .worker_key > /etc/concourse/worker_key
-
-for cert in ${enterprise_github_certs}
-do
-    aws s3 cp $cert /etc/pki/ca-trust/source/anchors
-done
-
-update-ca-trust
-# some check-resource containers seem to want to only check ca-certificates.crt
-cp /etc/ssl/certs/ca-bundle.crt /etc/ssl/certs/ca-certificates.crt
 
 touch /var/spool/cron/root
 echo "*/3 * * * * /home/root/healthcheck.sh" >> /var/spool/cron/root

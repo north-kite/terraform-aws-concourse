@@ -3,7 +3,7 @@ resource "aws_launch_template" "concourse_worker" {
   image_id                             = var.ami_id
   instance_type                        = var.concourse_worker_conf.instance_type
   instance_initiated_shutdown_behavior = "terminate"
-  tags                                 = merge(local.common_tags, { Name = local.name })
+
 
   //  user_data = templatefile("${path.module}/files/concourse_worker/userdata.tf2", {
   //    env = local.environment
@@ -29,6 +29,11 @@ resource "aws_launch_template" "concourse_worker" {
   iam_instance_profile {
     arn = aws_iam_instance_profile.concourse_worker.arn
   }
+
+  tags = merge(
+    local.common_tags,
+    { Name = "${local.environment}-concourse-worker" }
+  )
 
   tag_specifications {
     resource_type = "instance"

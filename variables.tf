@@ -106,7 +106,7 @@ variable "concourse_worker_conf" {
   })
   default = {
     instance_type         = "t2.2xlarge"
-    count                 = 0
+    count                 = 3
     environment_override  = {}
     garden_network_pool   = "172.16.0.0/21"
     garden_max_containers = "350"
@@ -200,6 +200,12 @@ variable "concourse_sec" {
     concourse_auth_duration = string
     concourse_db_username   = string
     concourse_db_password   = string
+    session_signing_key_public_secret_arn = string
+    session_signing_key_private_secret_arn = string
+    tsa_host_key_private_secret_arn = string
+    tsa_host_key_public_secret_arn = string
+    worker_key_private_secret_arn = string
+    worker_key_public_secret_arn = string
   })
 
   default = {
@@ -208,6 +214,12 @@ variable "concourse_sec" {
     concourse_auth_duration = "12h"
     concourse_db_username   = "concourseadmin"
     concourse_db_password   = "4dm1n15strator"
+    session_signing_key_public_secret_arn = "ARN_NOT_SET"
+    session_signing_key_private_secret_arn = "ARN_NOT_SET"
+    tsa_host_key_private_secret_arn = "ARN_NOT_SET"
+    tsa_host_key_public_secret_arn = "ARN_NOT_SET"
+    worker_key_private_secret_arn = "ARN_NOT_SET"
+    worker_key_public_secret_arn = "ARN_NOT_SET"
   }
 }
 

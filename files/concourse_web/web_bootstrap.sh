@@ -1,11 +1,22 @@
 #!/bin/bash
 
 set -euxo pipefail
-mkdir -p /etc/concourse
 
 export AWS_DEFAULT_REGION=${aws_default_region}
 export CONCOURSE_USER=${concourse_username}
 export CONCOURSE_PASSWORD=${concourse_password}
+
+mkdir -p /etc/concourse
+
+# Obtain keys from AWS Secrets Manager
+aws secretsmanager get-secret-value --secret-id ${session_signing_key_private_secret_arn} --query SecretBinary --output text | base64 -d > /etc/concourse/session_signing_key
+aws secretsmanager get-secret-value --secret-id ${session_signing_key_public_secret_arn} --query SecretBinary --output text | base64 -d > /etc/concourse/session_signing_key.pub
+aws secretsmanager get-secret-value --secret-id ${tsa_host_key_private_secret_arn} --query SecretBinary --output text | base64 -d > /etc/concourse/tsa_host_key
+aws secretsmanager get-secret-value --secret-id ${tsa_host_key_public_secret_arn} --query SecretBinary --output text | base64 -d > /etc/concourse/tsa_host_key.pub
+aws secretsmanager get-secret-value --secret-id ${worker_key_private_secret_arn} --query SecretBinary --output text | base64 -d > /etc/concourse/worker_key
+aws secretsmanager get-secret-value --secret-id ${worker_key_public_secret_arn} --query SecretBinary --output text | base64 -d > /etc/concourse/worker_key.pub
+cp /etc/concourse/worker_key.pub /etc/concourse/authorized_worker_keys
+
 
 wget -q https://github.com/concourse/concourse/releases/download/v${concourse_version}/concourse-${concourse_version}-linux-amd64.tgz
 tar -zxf concourse-*.tgz -C /usr/local
@@ -15,12 +26,6 @@ cat >> /etc/profile.d/concourse.sh << \EOF
 EOF
 
 source /etc/profile.d/concourse.sh
-
-concourse generate-key -t rsa -f /etc/concourse/session_signing_key
-concourse generate-key -t ssh -f /etc/concourse/tsa_host_key
-concourse generate-key -t ssh -f /etc/concourse/worker_key
-
-cp /etc/concourse/worker_key.pub /etc/concourse/authorized_worker_keys
 
 cat <<EOF >> /etc/systemd/system/concourse-web.env
 CONCOURSE_POSTGRES_PASSWORD=${concourse_db_password}

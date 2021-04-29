@@ -7,7 +7,7 @@ locals {
   //    }
   //  )
 
-  service_env_vars = merge(
+  worker_service_env_vars = merge(
     {
       CONCOURSE_EPHEMERAL = true
       CONCOURSE_WORK_DIR  = "/opt/concourse"
@@ -31,33 +31,34 @@ locals {
   )
 
   worker_systemd_file = templatefile(
-    "${path.module}/templates/worker_systemd",
+    "${path.module}/files/concourse_worker/worker_systemd",
     {
-      environment_vars = local.service_env_vars
+      environment_vars = local.worker_service_env_vars
     }
   )
 
   worker_upstart_file = templatefile(
-    "${path.module}/templates/worker_upstart",
+    "${path.module}/files/concourse_worker/worker_upstart",
     {
-      environment_vars = local.service_env_vars
+      environment_vars = local.worker_service_env_vars
     }
   )
 
   worker_bootstrap_file = templatefile(
-    "${path.module}/templates/worker_bootstrap.sh",
+    "${path.module}/files/concourse_worker/worker_bootstrap.sh",
     {
       aws_default_region = data.aws_region.current.name
+      tsa_host_key_public_secret_arn = var.concourse_sec.tsa_host_key_public_secret_arn
+      worker_key_private_secret_arn = var.concourse_sec.worker_key_private_secret_arn
       //      http_proxy              = var.proxy.http_proxy
       //      https_proxy             = var.proxy.https_proxy
       //      no_proxy                = var.proxy.no_proxy
-      //      enterprise_github_certs = "${join(" ", var.enterprise_github_certs)}"
       name = local.name
     }
   )
 
   healthcheck_file = templatefile(
-    "${path.module}/templates/healthcheck.sh",
+    "${path.module}/files/concourse_worker/healthcheck.sh",
     {}
   )
 

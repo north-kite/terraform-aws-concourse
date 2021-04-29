@@ -7,7 +7,7 @@ locals {
   //  }
   //  )
 
-  service_env_vars = merge(
+  web_service_env_vars = merge(
     {
       CONCOURSE_CLUSTER_NAME  = local.name
       CONCOURSE_EXTERNAL_URL  = "https://${local.fqdn}"
@@ -69,7 +69,7 @@ locals {
   web_systemd_file = templatefile(
     "${path.module}/files/concourse_web/web_systemd",
     {
-      environment_vars = merge(local.service_env_vars,
+      environment_vars = merge(local.web_service_env_vars,
         {
           CONCOURSE_PEER_ADDRESS = "127.0.0.1"
       })
@@ -79,7 +79,7 @@ locals {
   web_upstart_file = templatefile(
     "${path.module}/files/concourse_web/web_upstart",
     {
-      environment_vars = merge(local.service_env_vars,
+      environment_vars = merge(local.web_service_env_vars,
         {
           CONCOURSE_PEER_ADDRESS = "$HOSTNAME"
       })
@@ -95,6 +95,12 @@ locals {
       concourse_password    = var.concourse_sec.concourse_password
       concourse_db_username = var.concourse_sec.concourse_db_username
       concourse_db_password = var.concourse_sec.concourse_db_password
+      session_signing_key_public_secret_arn = var.concourse_sec.session_signing_key_public_secret_arn
+      session_signing_key_private_secret_arn = var.concourse_sec.session_signing_key_private_secret_arn
+      tsa_host_key_private_secret_arn = var.concourse_sec.tsa_host_key_private_secret_arn
+      tsa_host_key_public_secret_arn = var.concourse_sec.tsa_host_key_public_secret_arn
+      worker_key_private_secret_arn = var.concourse_sec.worker_key_private_secret_arn
+      worker_key_public_secret_arn = var.concourse_sec.worker_key_public_secret_arn
 
       //    http_proxy              = var.proxy.http_proxy
       //    https_proxy             = var.proxy.https_proxy
