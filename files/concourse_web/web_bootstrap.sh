@@ -17,7 +17,6 @@ aws secretsmanager get-secret-value --secret-id ${worker_key_private_secret_arn}
 aws secretsmanager get-secret-value --secret-id ${worker_key_public_secret_arn} --query SecretString --output text > /etc/concourse/worker_key.pub
 cp /etc/concourse/worker_key.pub /etc/concourse/authorized_worker_keys
 
-
 wget -q https://github.com/concourse/concourse/releases/download/v${concourse_version}/concourse-${concourse_version}-linux-amd64.tgz
 tar -zxf concourse-*.tgz -C /usr/local
 
