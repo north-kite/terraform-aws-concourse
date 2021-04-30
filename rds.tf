@@ -31,7 +31,7 @@ resource "aws_rds_cluster" "cluster" {
   apply_immediately         = true
   db_subnet_group_name      = aws_db_subnet_group.concourse_cluster.id
   final_snapshot_identifier = "${local.name}-final-snapshot"
-  skip_final_snapshot       = false
+  skip_final_snapshot       = true
   //  snapshot_identifier       = data.aws_db_cluster_snapshot.concourse_cluster.id
   storage_encrypted      = true
   kms_key_id             = aws_kms_key.concourse_aurora.arn
