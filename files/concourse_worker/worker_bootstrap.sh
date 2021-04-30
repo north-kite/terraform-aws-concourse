@@ -22,6 +22,15 @@ touch /var/spool/cron/root
 echo "*/3 * * * * /home/root/healthcheck.sh" >> /var/spool/cron/root
 chmod 644 /var/spool/cron/root
 
+wget -q https://github.com/concourse/concourse/releases/download/v${concourse_version}/concourse-${concourse_version}-linux-amd64.tgz
+tar -zxf concourse-*.tgz -C /usr/local
+
+cat >> /etc/profile.d/concourse.sh << \EOF
+  PATH="/usr/local/concourse/bin:$PATH"
+EOF
+
+source /etc/profile.d/concourse.sh
+
 if [[ "$(rpm -qf /sbin/init)" == upstart* ]];
 then
     initctl start concourse-worker

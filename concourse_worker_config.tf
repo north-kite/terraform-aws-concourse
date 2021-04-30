@@ -50,6 +50,7 @@ locals {
       aws_default_region             = data.aws_region.current.name
       tsa_host_key_public_secret_arn = var.concourse_sec.tsa_host_key_public_secret_arn
       worker_key_private_secret_arn  = var.concourse_sec.worker_key_private_secret_arn
+      concourse_version              = var.concourse_version
       //      http_proxy              = var.proxy.http_proxy
       //      https_proxy             = var.proxy.https_proxy
       //      no_proxy                = var.proxy.no_proxy
