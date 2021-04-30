@@ -2,10 +2,9 @@ resource "aws_lb" "concourse_lb" {
   name               = "${local.environment}-concourse-web"
   internal           = false
   load_balancer_type = "application"
-  //  subnets            = module.vpc.aws_subnets_public[*].id
-  subnets         = module.vpc.public_subnets
-  security_groups = [aws_security_group.concourse_lb.id]
-  tags            = merge(local.common_tags, { Name = "${local.name}-lb" })
+  subnets            = module.vpc.public_subnets
+  security_groups    = [aws_security_group.concourse_lb.id]
+  tags               = merge(local.common_tags, { Name = "${local.name}-lb" })
 
   //  TODO: Backfill logging bucket once such a thing is correctly defined, somewhere
   //  access_logs {
@@ -20,8 +19,7 @@ resource "aws_lb_listener" "concourse_https" {
   port              = 443
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
-  //TODO: Requires a R53 HZ with some kind of sub-domain config allowing from a domain we can use for this
-  certificate_arn = aws_acm_certificate.concourse_web_dl.arn
+  certificate_arn   = aws_acm_certificate.concourse_web_dl.arn
 
   default_action {
     type = "fixed-response"
@@ -45,7 +43,7 @@ resource "aws_lb_listener_rule" "concourse_https" {
   condition {
     host_header {
       values = [
-        local.fqdn
+        local.fqdn,
       ]
     }
   }
@@ -71,11 +69,6 @@ resource "aws_lb_target_group" "concourse_web_http" {
   tags = merge(local.common_tags, { Name = local.name })
 }
 
-//resource "aws_autoscaling_attachment" "web_http" {
-//  alb_target_group_arn   = aws_lb_target_group.concourse_web_http.id
-//  autoscaling_group_name = aws_autoscaling_group.concourse_web.name
-//}
-
 resource "aws_lb_target_group" "web_ssh" {
   name     = "${local.environment}-concourse-web-ssh"
   port     = 2222
@@ -100,7 +93,28 @@ resource "aws_lb_target_group" "web_ssh" {
   tags = merge(local.common_tags, { Name = local.name })
 }
 
-//resource "aws_autoscaling_attachment" "web_ssh" {
-//  alb_target_group_arn   = aws_lb_target_group.web_ssh.id
-//  autoscaling_group_name = aws_autoscaling_group.concourse_web.name
-//}
+resource "aws_lb" "internal_lb" {
+  name               = "${local.environment}-concourse-internal"
+  internal           = true
+  load_balancer_type = "network"
+  subnets            = module.vpc.private_subnets
+  tags               = merge(local.common_tags, { Name = "${local.name}-int-lb" })
+
+  //  TODO: Backfill logging bucket once such a thing is correctly defined, somewhere
+  //  access_logs {
+  //    bucket  = var.logging_bucket
+  //    prefix  = "ELBLogs/${var.name}"
+  //    enabled = true
+  //  }
+}
+
+resource "aws_lb_listener" "ssh" {
+  load_balancer_arn = aws_lb.internal_lb.arn
+  port              = 2222
+  protocol          = "TCP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.web_ssh.arn
+  }
+}

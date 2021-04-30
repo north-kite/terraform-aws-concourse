@@ -45,14 +45,14 @@ resource "aws_security_group" "concourse_vpc_endpoints" {
   }
 }
 
-resource "aws_security_group_rule" "internal_ssh_from_bastion_egress" {
-  from_port                = 22
-  protocol                 = "tcp"
-  source_security_group_id = aws_security_group.concourse_vpc_endpoints.id
-  to_port                  = 22
-  type                     = "ingress"
-  security_group_id        = aws_security_group.concourse_web.id
-}
+//resource "aws_security_group_rule" "internal_ssh_from_bastion_egress" {
+//  from_port                = 22
+//  protocol                 = "tcp"
+//  source_security_group_id = aws_security_group.concourse_vpc_endpoints.id
+//  to_port                  = 22
+//  type                     = "ingress"
+//  security_group_id        = aws_security_group.concourse_web.id
+//}
 
 resource "aws_security_group_rule" "lb_external_https_in" {
   description       = "enable inbound connectivity from whitelisted endpoints"
@@ -121,6 +121,16 @@ resource "aws_security_group_rule" "web_internal_out_all" {
   from_port         = 0
   to_port           = 65535
   security_group_id = aws_security_group.concourse_web.id
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "worker_internal_out_all" {
+  description       = "worker_internal_out_all"
+  type              = "egress"
+  protocol          = "all"
+  from_port         = 0
+  to_port           = 65535
+  security_group_id = aws_security_group.concourse_worker.id
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
@@ -225,12 +235,12 @@ resource "aws_security_group_rule" "web_outbound_dynamodb_https" {
   prefix_list_ids   = [module.vpc.vpc_endpoint_dynamodb_pl_id]
 }
 
-resource "aws_security_group_rule" "worker_ec2_packer_ssh" {
-  description       = "Allow EC2 instances to receive SSH traffic"
-  type              = "ingress"
-  protocol          = "tcp"
-  from_port         = 22
-  to_port           = 22
-  self              = true
-  security_group_id = aws_security_group.concourse_worker.id
-}
+//resource "aws_security_group_rule" "worker_ec2_packer_ssh" {
+//  description       = "Allow EC2 instances to receive SSH traffic"
+//  type              = "ingress"
+//  protocol          = "tcp"
+//  from_port         = 22
+//  to_port           = 22
+//  self              = true
+//  security_group_id = aws_security_group.concourse_worker.id
+//}

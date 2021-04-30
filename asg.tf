@@ -4,7 +4,10 @@ resource "aws_autoscaling_group" "concourse_web" {
   min_size              = var.concourse_web_conf.count
   desired_capacity      = var.concourse_web_conf.count
   max_instance_lifetime = var.concourse_web_conf.max_instance_lifetime
-  target_group_arns     = [aws_lb_target_group.concourse_web_http.arn]
+  target_group_arns = [
+    aws_lb_target_group.concourse_web_http.arn,
+    aws_lb_target_group.web_ssh.arn,
+  ]
 
   vpc_zone_identifier = module.vpc.private_subnets
 

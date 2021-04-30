@@ -42,6 +42,7 @@ variable "concourse_web_conf" {
     max_instance_lifetime = number
     instance_type         = string
     environment_override  = map(string)
+    key_name              = string
     asg_scaling_config = object({
       night = object({
         min_size         = number
@@ -63,6 +64,7 @@ variable "concourse_web_conf" {
     max_instance_lifetime = 60 * 60 * 24 * 7
     count                 = 1
     environment_override  = {}
+    key_name              = null
     asg_scaling_config = {
       night = {
         min_size         = 1
@@ -89,6 +91,7 @@ variable "concourse_worker_conf" {
     garden_network_pool   = string
     garden_max_containers = string
     log_level             = string
+    key_name              = string
     asg_scaling_config = object({
       night = object({
         min_size         = number
@@ -111,6 +114,7 @@ variable "concourse_worker_conf" {
     garden_network_pool   = "172.16.0.0/21"
     garden_max_containers = "350"
     log_level             = "error"
+    key_name              = null
     asg_scaling_config = {
       night = {
         min_size         = 1
@@ -239,4 +243,10 @@ variable "concourse_saml_conf" {
     ca_cert      = ""
     issuer       = ""
   }
+}
+
+variable "concourse_internal_allowed_principals" {
+  description = "A list of AWS principals that are allowed to reach Concourse via its internal load balancer"
+  type        = list(string)
+  default     = []
 }
