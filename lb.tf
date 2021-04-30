@@ -2,9 +2,9 @@ resource "aws_lb" "concourse_lb" {
   name               = "${local.environment}-concourse-web"
   internal           = false
   load_balancer_type = "application"
-  subnets         = module.vpc.public_subnets
-  security_groups = [aws_security_group.concourse_lb.id]
-  tags            = merge(local.common_tags, { Name = "${local.name}-lb" })
+  subnets            = module.vpc.public_subnets
+  security_groups    = [aws_security_group.concourse_lb.id]
+  tags               = merge(local.common_tags, { Name = "${local.name}-lb" })
 
   //  TODO: Backfill logging bucket once such a thing is correctly defined, somewhere
   //  access_logs {
@@ -19,7 +19,7 @@ resource "aws_lb_listener" "concourse_https" {
   port              = 443
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
-  certificate_arn = aws_acm_certificate.concourse_web_dl.arn
+  certificate_arn   = aws_acm_certificate.concourse_web_dl.arn
 
   default_action {
     type = "fixed-response"
@@ -98,14 +98,14 @@ resource "aws_lb" "internal_lb" {
   internal           = true
   load_balancer_type = "network"
   subnets            = module.vpc.private_subnets
-  tags            = merge(local.common_tags, { Name = "${local.name}-int-lb" })
+  tags               = merge(local.common_tags, { Name = "${local.name}-int-lb" })
 
   //  TODO: Backfill logging bucket once such a thing is correctly defined, somewhere
-//  access_logs {
-//    bucket  = var.logging_bucket
-//    prefix  = "ELBLogs/${var.name}"
-//    enabled = true
-//  }
+  //  access_logs {
+  //    bucket  = var.logging_bucket
+  //    prefix  = "ELBLogs/${var.name}"
+  //    enabled = true
+  //  }
 }
 
 resource "aws_lb_listener" "ssh" {
