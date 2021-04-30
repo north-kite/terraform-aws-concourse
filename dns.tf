@@ -11,3 +11,15 @@ resource "aws_route53_record" "concourse_web_lb" {
   type            = "CNAME"
   zone_id         = data.aws_route53_zone.public.zone_id
 }
+
+resource "aws_route53_record" "concourse" {
+  name    = local.fqdn_int
+  type    = "A"
+  zone_id = data.aws_route53_zone.public.id
+
+  alias {
+    evaluate_target_health = false
+    name                   = aws_lb.internal_lb.dns_name
+    zone_id                = aws_lb.internal_lb.zone_id
+  }
+}

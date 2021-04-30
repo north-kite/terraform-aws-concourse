@@ -3,11 +3,9 @@ resource "aws_launch_template" "concourse_worker" {
   image_id                             = var.ami_id
   instance_type                        = var.concourse_worker_conf.instance_type
   instance_initiated_shutdown_behavior = "terminate"
+  key_name = "concourse"
 
-
-  //  user_data = templatefile("${path.module}/files/concourse_worker/userdata.tf2", {
-  //    env = local.environment
-  //  })
+  user_data = data.template_cloudinit_config.worker_bootstrap.rendered
 
   block_device_mappings {
     device_name = "/dev/xvda"

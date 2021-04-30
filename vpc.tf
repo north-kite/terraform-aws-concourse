@@ -28,3 +28,10 @@ module "vpc" {
     Environment = local.environment
   }
 }
+
+//resource "aws_route" "concourse_ui_to_client" {
+//  count                  = length(local.route_table_cidr_combinations)
+//  route_table_id         = local.route_table_cidr_combinations[count.index].rtb_id
+//  destination_cidr_block = local.route_table_cidr_combinations[count.index].cidr
+//  nat_gateway_id         = module.vpc.natgw_ids[count.index % local.zone_count]
+//}

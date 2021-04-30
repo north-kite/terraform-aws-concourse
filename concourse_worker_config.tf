@@ -12,7 +12,7 @@ locals {
       CONCOURSE_EPHEMERAL = true
       CONCOURSE_WORK_DIR  = "/opt/concourse"
 
-      CONCOURSE_TSA_HOST               = "${aws_lb.concourse_lb.dns_name}:2222"
+      CONCOURSE_TSA_HOST               = "${aws_lb.internal_lb.dns_name}:2222"
       CONCOURSE_TSA_PUBLIC_KEY         = "/etc/concourse/tsa_host_key.pub"
       CONCOURSE_TSA_WORKER_PRIVATE_KEY = "/etc/concourse/worker_key"
       CONCOURSE_CERTS_DIR              = "/etc/ssl/certs"
