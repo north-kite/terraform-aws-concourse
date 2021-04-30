@@ -3,7 +3,7 @@ resource "aws_launch_template" "concourse_worker" {
   image_id                             = var.ami_id
   instance_type                        = var.concourse_worker_conf.instance_type
   instance_initiated_shutdown_behavior = "terminate"
-  key_name                             = "concourse"
+  key_name                             = var.concourse_worker_conf.key_name
 
   user_data = data.template_cloudinit_config.worker_bootstrap.rendered
 
