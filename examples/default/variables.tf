@@ -5,5 +5,5 @@ variable "region" {
 
 variable "root_domain" {
   description = "TODO"
-  type = string
+  type        = string
 }
