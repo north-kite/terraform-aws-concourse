@@ -20,9 +20,10 @@ module "vpc" {
   enable_ec2messages_endpoint    = true
   enable_secretsmanager_endpoint = true
 
-  ssm_endpoint_security_group_ids         = [aws_security_group.concourse_vpc_endpoints.id]
-  ssmmessages_endpoint_security_group_ids = [aws_security_group.concourse_vpc_endpoints.id]
-  ec2messages_endpoint_security_group_ids = [aws_security_group.concourse_vpc_endpoints.id]
+  ssm_endpoint_security_group_ids            = [aws_security_group.concourse_vpc_endpoints.id]
+  ssmmessages_endpoint_security_group_ids    = [aws_security_group.concourse_vpc_endpoints.id]
+  ec2messages_endpoint_security_group_ids    = [aws_security_group.concourse_vpc_endpoints.id]
+  secretsmanager_endpoint_security_group_ids = [aws_security_group.concourse_vpc_endpoints.id]
 
   tags = {
     Terraform   = "true"
