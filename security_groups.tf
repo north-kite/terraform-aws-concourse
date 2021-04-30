@@ -125,7 +125,7 @@ resource "aws_security_group_rule" "web_internal_out_all" {
 }
 
 resource "aws_security_group_rule" "worker_internal_out_all" {
-  description       = "web_internal_out_all"
+  description       = "worker_internal_out_all"
   type              = "egress"
   protocol          = "all"
   from_port         = 0
