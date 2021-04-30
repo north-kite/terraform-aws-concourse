@@ -1,6 +1,6 @@
 locals {
   name        = var.project_name
-  environment = terraform.workspace == "default" ? "mgmt-dev" : terraform.workspace
+  environment = terraform.workspace == "default" ? "mgmt-dev" : trimprefix(terraform.workspace, "kitchen-terraform-")
   hosted_zone = join(".", [local.environment, var.root_domain])
   fqdn        = join(".", [local.name, local.hosted_zone])
   fqdn_int    = join(".", [local.name, "int", local.hosted_zone])
