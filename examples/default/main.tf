@@ -51,11 +51,11 @@ module "concourse" {
   }
 
   concourse_sec = {
-    concourse_username                     = "test"
-    concourse_password                     = "test"
+    concourse_username                     = var.concourse_credential.web.username
+    concourse_password                     = var.concourse_credential.web.password
     concourse_auth_duration                = "24h"
-    concourse_db_username                  = "test-db"
-    concourse_db_password                  = "test-db-password"
+    concourse_db_username                  = var.concourse_credential.db.username
+    concourse_db_password                  = var.concourse_credential.db.password
     session_signing_key_public_secret_arn  = aws_secretsmanager_secret_version.session_signing_key_public.arn
     session_signing_key_private_secret_arn = aws_secretsmanager_secret_version.session_signing_key_private.arn
     tsa_host_key_private_secret_arn        = aws_secretsmanager_secret_version.tsa_host_key_private.arn
