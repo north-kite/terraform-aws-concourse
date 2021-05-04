@@ -139,3 +139,25 @@ resource "aws_iam_role_policy_attachment" "concourse_worker_autoscaling" {
   policy_arn = aws_iam_policy.concourse_worker_autoscaling.arn
   role       = aws_iam_role.concourse_worker.id
 }
+
+data "aws_iam_policy_document" "concourse_tag_ec2" {
+  statement {
+    actions = [
+      "ec2:DescribeInstances",
+      "ec2:CreateTags"
+    ]
+
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "concourse_tag_ec2" {
+  name        = "${local.name}EC2"
+  description = "Change Concourse Worker's Tags"
+  policy      = data.aws_iam_policy_document.concourse_tag_ec2.json
+}
+
+resource "aws_iam_role_policy_attachment" "concourse_tag_ec2" {
+  policy_arn = aws_iam_policy.concourse_tag_ec2.arn
+  role       = aws_iam_role.concourse_worker.id
+}
