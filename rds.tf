@@ -1,5 +1,5 @@
 resource "aws_db_subnet_group" "concourse_cluster" {
-  subnet_ids = module.vpc.private_subnets
+  subnet_ids = local.vpc.private_subnets
 }
 
 resource "aws_kms_key" "concourse_aurora" {

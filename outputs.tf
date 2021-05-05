@@ -1,5 +1,5 @@
 output "vpc_id" {
-  value = module.vpc.vpc_id
+  value = local.vpc.vpc_id
 }
 
 output "concourse_web_dns" {

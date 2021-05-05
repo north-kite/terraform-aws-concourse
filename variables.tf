@@ -176,6 +176,42 @@ variable "vpc_name" {
   default     = "cicd"
 }
 
+variable "create_vpc" {
+  description = "(Optional) Flag to indicate if new VPC needs to be created."
+  type        = bool
+  default     = true
+}
+
+variable "vpc_id" {
+  description = "(Optional) The id of the VPC to create resources in. Requires `create_vpc` to be `false`."
+  type        = string
+  default     = null
+}
+
+variable "public_subnets" {
+  description = "(Optional) List of public subnet IDs and CIDRs."
+  type = object({
+    ids         = list(string)
+    cidr_blocks = list(string)
+  })
+  default = {
+    ids         = []
+    cidr_blocks = []
+  }
+}
+
+variable "private_subnets" {
+  description = "(Optional) List of private subnet IDs and CIDRs."
+  type = object({
+    ids         = list(string)
+    cidr_blocks = list(string)
+  })
+  default = {
+    ids         = []
+    cidr_blocks = []
+  }
+}
+
 variable "root_domain" {
   description = "The root DNS domain on which to base the deployment"
   type        = string

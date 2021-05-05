@@ -1,6 +1,6 @@
 locals {
   name        = var.project_name
-  environment = terraform.workspace == "default" ? "mgmt-dev" : trimprefix(terraform.workspace, "kitchen-terraform-")
+  environment = terraform.workspace == "default" ? "mgmt-dev" : replace(trimprefix(terraform.workspace, "kitchen-terraform-"), "-local", "")
   hosted_zone = join(".", [local.environment, var.root_domain])
   fqdn        = join(".", [local.name, local.hosted_zone])
   fqdn_int    = join(".", [local.name, "int", local.hosted_zone])
@@ -19,7 +19,7 @@ locals {
   //  route_table_cidr_combinations = [
   //  # in pair, element zero is a route table ID and element one is a cidr block,
   //  # in all unique combinations.
-  //  for pair in setproduct(module.vpc.private_route_table_ids, var.whitelist_cidr_blocks) : {
+  //  for pair in setproduct(local.vpc.private_route_table_ids, var.whitelist_cidr_blocks) : {
   //    rtb_id = pair[0]
   //    cidr   = pair[1]
   //  }

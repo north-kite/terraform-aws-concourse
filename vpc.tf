@@ -1,4 +1,6 @@
 module "vpc" {
+  count = var.create_vpc ? 1 : 0
+
   source  = "terraform-aws-modules/vpc/aws"
   version = "2.78.0"
 
@@ -31,9 +33,32 @@ module "vpc" {
   }
 }
 
+data "aws_vpc" "vpc" {
+  count = !var.create_vpc ? 1 : 0
+  id    = var.vpc_id
+}
+
+locals {
+  vpc = var.create_vpc ? {
+    vpc_id                      = module.vpc[0].vpc_id
+    private_subnets             = module.vpc[0].private_subnets
+    private_subnets_cidr_blocks = module.vpc[0].private_subnets_cidr_blocks
+    public_subnets              = module.vpc[0].public_subnets
+    vpc_endpoint_s3_pl_id       = module.vpc[0].vpc_endpoint_s3_pl_id
+    vpc_endpoint_dynamodb_pl_id = module.vpc[0].vpc_endpoint_dynamodb_pl_id
+    } : {
+    vpc_id                      = data.aws_vpc.vpc[0].id
+    private_subnets             = var.private_subnets.ids
+    private_subnets_cidr_blocks = var.private_subnets.cidr_blocks
+    public_subnets              = var.public_subnets.ids
+    vpc_endpoint_s3_pl_id       = ""
+    vpc_endpoint_dynamodb_pl_id = ""
+  }
+}
+
 //resource "aws_route" "concourse_ui_to_client" {
 //  count                  = length(local.route_table_cidr_combinations)
 //  route_table_id         = local.route_table_cidr_combinations[count.index].rtb_id
 //  destination_cidr_block = local.route_table_cidr_combinations[count.index].cidr
-//  nat_gateway_id         = module.vpc.natgw_ids[count.index % local.zone_count]
+//  nat_gateway_id         = local.vpc.natgw_ids[count.index % local.zone_count]
 //}

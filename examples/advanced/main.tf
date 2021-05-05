@@ -2,6 +2,11 @@ provider "aws" {
   region = var.region
 }
 
+data "aws_availability_zones" "current" {}
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
 data "aws_ami" "amazon_linux_2" {
   most_recent = true
   owners      = ["amazon"]
@@ -44,10 +49,15 @@ module "concourse" {
   project_team  = "kitchen"
   ami_id        = data.aws_ami.amazon_linux_2.id
 
-  cidr = {
-    vpc     = "10.2.0.0/16"
-    private = ["10.2.0.0/24", "10.2.1.0/24", "10.2.2.0/24"]
-    public  = ["10.2.100.0/24", "10.2.101.0/24", "10.2.102.0/24"]
+  create_vpc = false
+  vpc_id     = module.vpc.vpc_id
+  public_subnets = {
+    ids         = module.vpc.public_subnets
+    cidr_blocks = module.vpc.public_subnets
+  }
+  private_subnets = {
+    ids         = module.vpc.private_subnets
+    cidr_blocks = module.vpc.private_subnets_cidr_blocks
   }
 
   concourse_sec = {

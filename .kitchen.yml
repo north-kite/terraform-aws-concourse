@@ -21,3 +21,12 @@ suites:
           backend: local
           attrs:
             - test/integration/default/attrs.yml
+  - name: advanced
+    driver:
+      root_module_directory: examples/advanced
+    verifier:
+      systems:
+        - name: advanced
+          backend: local
+          attrs:
+            - test/integration/advanced/attrs.yml

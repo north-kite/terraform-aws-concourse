@@ -2,7 +2,7 @@ resource "aws_lb" "concourse_lb" {
   name               = "${local.environment}-concourse-web"
   internal           = false
   load_balancer_type = "application"
-  subnets            = module.vpc.public_subnets
+  subnets            = local.vpc.public_subnets
   security_groups    = [aws_security_group.concourse_lb.id]
   tags               = merge(local.common_tags, { Name = "${local.name}-lb" })
 
@@ -53,7 +53,7 @@ resource "aws_lb_target_group" "concourse_web_http" {
   name     = "${local.environment}-concourse-web-http"
   port     = 8080
   protocol = "HTTP"
-  vpc_id   = module.vpc.vpc_id
+  vpc_id   = local.vpc.vpc_id
 
   health_check {
     port    = "8080"
@@ -73,7 +73,7 @@ resource "aws_lb_target_group" "web_ssh" {
   name     = "${local.environment}-concourse-web-ssh"
   port     = 2222
   protocol = "TCP"
-  vpc_id   = module.vpc.vpc_id
+  vpc_id   = local.vpc.vpc_id
 
   # TODO healthcheck issues
   # port 2222 is known to log spam failed SSH connections into CloudWatch
@@ -97,7 +97,7 @@ resource "aws_lb" "internal_lb" {
   name               = "${local.environment}-concourse-internal"
   internal           = true
   load_balancer_type = "network"
-  subnets            = module.vpc.private_subnets
+  subnets            = local.vpc.private_subnets
   tags               = merge(local.common_tags, { Name = "${local.name}-int-lb" })
 
   //  TODO: Backfill logging bucket once such a thing is correctly defined, somewhere

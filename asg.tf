@@ -9,7 +9,7 @@ resource "aws_autoscaling_group" "concourse_web" {
     aws_lb_target_group.web_ssh.arn,
   ]
 
-  vpc_zone_identifier = module.vpc.private_subnets
+  vpc_zone_identifier = local.vpc.private_subnets
 
   //  tags = merge(
   //    local.common_tags,
@@ -34,7 +34,7 @@ resource "aws_autoscaling_group" "worker" {
   min_size         = var.concourse_worker_conf.count
   desired_capacity = var.concourse_worker_conf.count
 
-  vpc_zone_identifier = module.vpc.private_subnets
+  vpc_zone_identifier = local.vpc.private_subnets
 
   //  tags = merge(
   //    local.common_tags,

@@ -1,5 +1,5 @@
 resource "aws_security_group" "concourse_lb" {
-  vpc_id = module.vpc.vpc_id
+  vpc_id = local.vpc.vpc_id
   tags   = merge(local.common_tags, { Name = "${local.name}-lb" })
 
   lifecycle {
@@ -10,7 +10,7 @@ resource "aws_security_group" "concourse_lb" {
 resource "aws_security_group" "concourse_web" {
   name        = "ConcourseWeb"
   description = "Concourse Web Nodes"
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = local.vpc.vpc_id
   tags        = merge(local.common_tags, { Name = local.name })
 
   lifecycle {
@@ -21,7 +21,7 @@ resource "aws_security_group" "concourse_web" {
 resource "aws_security_group" "concourse_worker" {
   name        = "ConcourseWorker"
   description = "ConcourseWorker"
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = local.vpc.vpc_id
   tags        = merge(local.common_tags, { Name = "${local.name}-lb" })
 
   lifecycle {
@@ -30,14 +30,14 @@ resource "aws_security_group" "concourse_worker" {
 }
 
 resource "aws_security_group" "concourse_db" {
-  vpc_id = module.vpc.vpc_id
+  vpc_id = local.vpc.vpc_id
   tags   = merge(local.common_tags, { Name = "${local.name}-db" })
 }
 
 resource "aws_security_group" "concourse_vpc_endpoints" {
   name        = "ConcourseVPCEndpoints"
   description = "Concourse VPC Endpoints"
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = local.vpc.vpc_id
   tags        = merge(local.common_tags, { Name = local.name })
 
   lifecycle {
@@ -91,7 +91,7 @@ resource "aws_security_group_rule" "int_lb_web_in_http" {
   from_port         = 8080
   to_port           = 8080
   security_group_id = aws_security_group.concourse_web.id
-  cidr_blocks       = module.vpc.private_subnets_cidr_blocks
+  cidr_blocks       = local.vpc.private_subnets_cidr_blocks
 }
 
 resource "aws_security_group_rule" "web_internal_in_tcp" {
@@ -141,7 +141,7 @@ resource "aws_security_group_rule" "web_lb_in_ssh" {
   from_port         = 2222
   to_port           = 2222
   security_group_id = aws_security_group.concourse_web.id
-  cidr_blocks       = module.vpc.private_subnets_cidr_blocks
+  cidr_blocks       = local.vpc.private_subnets_cidr_blocks
 }
 
 resource "aws_security_group_rule" "web_db_out" {
@@ -171,7 +171,7 @@ resource "aws_security_group_rule" "web_outbound_s3_https" {
   from_port         = 443
   to_port           = 443
   security_group_id = aws_security_group.concourse_web.id
-  prefix_list_ids   = [module.vpc.vpc_endpoint_s3_pl_id]
+  prefix_list_ids   = [local.vpc.vpc_endpoint_s3_pl_id]
 }
 
 resource "aws_security_group_rule" "web_outbound_s3_http" {
@@ -181,7 +181,7 @@ resource "aws_security_group_rule" "web_outbound_s3_http" {
   from_port         = 80
   to_port           = 80
   security_group_id = aws_security_group.concourse_web.id
-  prefix_list_ids   = [module.vpc.vpc_endpoint_s3_pl_id]
+  prefix_list_ids   = [local.vpc.vpc_endpoint_s3_pl_id]
 }
 
 //resource "aws_security_group_rule" "web_lb_in_metrics" {
@@ -202,7 +202,7 @@ resource "aws_security_group_rule" "worker_lb_out_ssh" {
   from_port         = 2222
   to_port           = 2222
   security_group_id = aws_security_group.concourse_worker.id
-  cidr_blocks       = module.vpc.private_subnets_cidr_blocks
+  cidr_blocks       = local.vpc.private_subnets_cidr_blocks
 }
 
 resource "aws_security_group_rule" "worker_outbound_s3_https" {
@@ -212,7 +212,7 @@ resource "aws_security_group_rule" "worker_outbound_s3_https" {
   from_port         = 443
   to_port           = 443
   security_group_id = aws_security_group.concourse_worker.id
-  prefix_list_ids   = [module.vpc.vpc_endpoint_s3_pl_id]
+  prefix_list_ids   = [local.vpc.vpc_endpoint_s3_pl_id]
 }
 
 resource "aws_security_group_rule" "worker_outbound_s3_http" {
@@ -222,7 +222,7 @@ resource "aws_security_group_rule" "worker_outbound_s3_http" {
   from_port         = 80
   to_port           = 80
   security_group_id = aws_security_group.concourse_worker.id
-  prefix_list_ids   = [module.vpc.vpc_endpoint_s3_pl_id]
+  prefix_list_ids   = [local.vpc.vpc_endpoint_s3_pl_id]
 }
 
 resource "aws_security_group_rule" "web_outbound_dynamodb_https" {
@@ -232,7 +232,7 @@ resource "aws_security_group_rule" "web_outbound_dynamodb_https" {
   from_port         = 443
   to_port           = 443
   security_group_id = aws_security_group.concourse_worker.id
-  prefix_list_ids   = [module.vpc.vpc_endpoint_dynamodb_pl_id]
+  prefix_list_ids   = [local.vpc.vpc_endpoint_dynamodb_pl_id]
 }
 
 //resource "aws_security_group_rule" "worker_ec2_packer_ssh" {
