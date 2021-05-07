@@ -21,7 +21,6 @@ locals {
       CONCOURSE_TSA_HOST_KEY        = "/etc/concourse/tsa_host_key"
       CONCOURSE_TSA_LOG_LEVEL       = "error"
       CONCOURSE_LOG_LEVEL           = "error"
-      CONCOURSE_LOG_LEVEL           = "error"
 
       #TODO: Setup Monitoring !10
       CONCOURSE_PROMETHEUS_BIND_IP   = "0.0.0.0"
