@@ -32,10 +32,13 @@ locals {
       CONCOURSE_SECRET_CACHE_DURATION                       = "1m"
 
       # Okta SAML Auth
-      CONCOURSE_SAML_DISPLAY_NAME = var.concourse_saml_conf.display_name
-      CONCOURSE_SAML_SSO_URL      = var.concourse_saml_conf.url
-      CONCOURSE_SAML_CA_CERT      = "/etc/concourse/okta.cert"
-      CONCOURSE_SAML_SSO_ISSUER   = var.concourse_saml_conf.issuer
+      CONCOURSE_SAML_DISPLAY_NAME  = var.concourse_saml_conf.display_name
+      CONCOURSE_SAML_SSO_URL       = var.concourse_saml_conf.url
+      CONCOURSE_SAML_CA_CERT       = "/etc/concourse/okta.cert"
+      CONCOURSE_SAML_SSO_ISSUER    = var.concourse_saml_conf.issuer
+      CONCOURSE_SAML_USERNAME_ATTR = "name"
+      CONCOURSE_SAML_EMAIL_ATTR    = "email"
+      CONCOURSE_SAML_GROUPS_ATTR   = "groups"
 
       # UC GitHub Auth
       CONCOURSE_GITHUB_HOST = var.github_url

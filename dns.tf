@@ -12,7 +12,7 @@ resource "aws_route53_record" "concourse_web_lb" {
   zone_id         = data.aws_route53_zone.public.zone_id
 }
 
-resource "aws_route53_record" "concourse" {
+resource "aws_route53_record" "concourse_int_lb" {
   name    = local.fqdn_int
   type    = "A"
   zone_id = data.aws_route53_zone.public.id
