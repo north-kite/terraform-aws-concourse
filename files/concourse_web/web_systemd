@@ -12,6 +12,11 @@ Environment=${key}=${value}
 
 ExecStart=/bin/sh -c '/usr/local/concourse/bin/concourse web > /var/log/concourse.log 2>&1'
 
+Restart=always
+RestartSec=10
+StartLimitBurst=30
+StartLimitInterval=330
+
 User=root
 Group=root
 
