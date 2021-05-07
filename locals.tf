@@ -4,6 +4,7 @@ locals {
   hosted_zone = join(".", [local.environment, var.root_domain])
   fqdn        = join(".", [local.name, local.hosted_zone])
   fqdn_int    = join(".", [local.name, "int", local.hosted_zone])
+  account     = data.aws_caller_identity.current.account_id
 
   zone_count = length(data.aws_availability_zones.current.zone_ids)
   zone_names = data.aws_availability_zones.current.names

@@ -8,7 +8,6 @@ resource "aws_iam_role" "concourse_web" {
   )
 }
 
-// not convinced this is actually needed, in terms of the perms/TR it supplies
 resource "aws_iam_role" "concourse_worker" {
   name = "${local.environment}-concourse-worker"
 
@@ -159,5 +158,27 @@ resource "aws_iam_policy" "concourse_tag_ec2" {
 
 resource "aws_iam_role_policy_attachment" "concourse_tag_ec2" {
   policy_arn = aws_iam_policy.concourse_tag_ec2.arn
+  role       = aws_iam_role.concourse_worker.id
+}
+
+data "aws_iam_policy_document" "concourse_worker_assume_ci_role" {
+  statement {
+    sid = "AllowConcourseWorkerAssumeCIRole"
+    actions = [
+      "sts:AssumeRole",
+    ]
+
+    resources = ["arn:aws:iam::${local.account}:role/ci"]
+  }
+}
+
+resource "aws_iam_policy" "concourse_worker_assume_ci_role" {
+  name        = "${local.environment}-concourse-worker-assume-ci-role"
+  description = "Allow Concourse Workers to assume the CI Role"
+  policy      = data.aws_iam_policy_document.concourse_worker_assume_ci_role.json
+}
+
+resource "aws_iam_role_policy_attachment" "concourse_worker_assume_ci_role" {
+  policy_arn = aws_iam_policy.concourse_worker_assume_ci_role.arn
   role       = aws_iam_role.concourse_worker.id
 }
