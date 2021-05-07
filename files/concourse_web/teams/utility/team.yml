@@ -1,6 +1,0 @@
-roles:
-  - name: member
-    oidc:
-      groups: ["default"]
-    github:
-      teams: ["team:default"]

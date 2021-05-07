@@ -1,6 +1,4 @@
 roles:
-  - name: member
-    oidc:
-      groups: ["default"]
-    github:
-      teams: ["team:default"]
+  - name: viewer
+    saml:
+      groups: ["Everyone"]
