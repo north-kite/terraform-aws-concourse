@@ -121,16 +121,6 @@ locals {
       concourse_password = var.concourse_sec.concourse_password
     }
   )
-
-  app = templatefile(
-    "${path.module}/files/concourse_web/teams/app/team.yml",
-    {}
-  )
-
-  infra = templatefile(
-    "${path.module}/files/concourse_web/teams/infra/team.yml",
-    {}
-  )
 }
 
 data "template_cloudinit_config" "web_bootstrap" {
@@ -171,25 +161,17 @@ write_files:
     path: /etc/systemd/system/concourse-web.service
     permissions: '0644'
   - encoding: b64
-    content: ${base64encode(local.teams)}
-    owner: root:root
-    path: /root/teams.sh
-    permissions: '0700'
-  - encoding: b64
-    content: ${base64encode(local.app)}
-    owner: root:root
-    path: /root/teams/app/team.yml
-    permissions: '0600'
-  - encoding: b64
-    content: ${base64encode(local.infra)}
-    owner: root:root
-    path: /root/teams/utility/team.yml
-    permissions: '0600'
-  - encoding: b64
     content: ${base64encode(var.concourse_saml_conf.ca_cert)}
     owner: root:root
     path: /etc/concourse/okta.cert
     permissions: '0600'
+%{ for team in keys(var.concourse_teams_conf) ~}
+  - encoding: b64
+    content: ${base64encode(lookup(var.concourse_teams_conf, team))}
+    owner: root:root
+    path: /root/teams/${team}/team.yml
+    permissions: '0600'
+%{ endfor ~}
 EOF
   }
 
@@ -206,20 +188,5 @@ EOF
   part {
     content_type = "text/x-shellscript"
     content      = local.teams
-  }
-
-  part {
-    content_type = "text/plain"
-    content      = local.app
-  }
-
-  part {
-    content_type = "text/plain"
-    content      = local.infra
-  }
-
-  part {
-    content_type = "text/plain"
-    content      = var.concourse_saml_conf.ca_cert
   }
 }
