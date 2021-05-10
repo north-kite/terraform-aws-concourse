@@ -122,13 +122,13 @@ locals {
     }
   )
 
-  teams_config = templatefile(
-    "${path.module}/files/concourse_web/teams/default/team.yml",
+  app = templatefile(
+    "${path.module}/files/concourse_web/teams/app/team.yml",
     {}
   )
 
-  oktatest = templatefile(
-    "${path.module}/files/concourse_web/teams/oktatest/team.yml",
+  infra = templatefile(
+    "${path.module}/files/concourse_web/teams/infra/team.yml",
     {}
   )
 }
@@ -176,12 +176,12 @@ write_files:
     path: /root/teams.sh
     permissions: '0700'
   - encoding: b64
-    content: ${base64encode(local.teams_config)}
+    content: ${base64encode(local.app)}
     owner: root:root
-    path: /root/teams/default/team.yml
+    path: /root/teams/app/team.yml
     permissions: '0600'
   - encoding: b64
-    content: ${base64encode(local.oktatest)}
+    content: ${base64encode(local.infra)}
     owner: root:root
     path: /root/teams/utility/team.yml
     permissions: '0600'
@@ -210,12 +210,12 @@ EOF
 
   part {
     content_type = "text/plain"
-    content      = local.teams_config
+    content      = local.app
   }
 
   part {
     content_type = "text/plain"
-    content      = local.oktatest
+    content      = local.infra
   }
 
   part {

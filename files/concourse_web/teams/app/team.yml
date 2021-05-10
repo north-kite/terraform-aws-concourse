@@ -1,0 +1,10 @@
+roles:
+  - name: owner
+    saml:
+      groups: ["IDP Infrastructure Admins"]
+  - name: member
+    saml:
+      groups: ["IDP Concourse Application Admins"]
+  - name: viewer
+    saml:
+      groups: ["IDP Concourse Viewers"]
