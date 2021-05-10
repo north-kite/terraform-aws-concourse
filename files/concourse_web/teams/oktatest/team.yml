@@ -1,0 +1,4 @@
+roles:
+  - name: owner
+    saml:
+      groups: ["IDP Infrastructure Admins"]

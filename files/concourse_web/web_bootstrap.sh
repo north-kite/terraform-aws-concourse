@@ -42,6 +42,10 @@ then
 else
     systemctl enable concourse-web.service
     systemctl start concourse-web.service
+    while ! $(systemctl is-active --quiet concourse-web.service); do
+      sleep 5
+    done
 fi
 
+# Concourse takes some time to startup
 sleep 20

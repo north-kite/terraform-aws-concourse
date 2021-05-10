@@ -127,13 +127,8 @@ locals {
     {}
   )
 
-  identity = templatefile(
-    "${path.module}/files/concourse_web/teams/identity/team.yml",
-    {}
-  )
-
-  utility = templatefile(
-    "${path.module}/files/concourse_web/teams/utility/team.yml",
+  oktatest = templatefile(
+    "${path.module}/files/concourse_web/teams/oktatest/team.yml",
     {}
   )
 }
@@ -186,12 +181,7 @@ write_files:
     path: /root/teams/default/team.yml
     permissions: '0600'
   - encoding: b64
-    content: ${base64encode(local.identity)}
-    owner: root:root
-    path: /root/teams/identity/team.yml
-    permissions: '0600'
-  - encoding: b64
-    content: ${base64encode(local.utility)}
+    content: ${base64encode(local.oktatest)}
     owner: root:root
     path: /root/teams/utility/team.yml
     permissions: '0600'
@@ -225,12 +215,7 @@ EOF
 
   part {
     content_type = "text/plain"
-    content      = local.identity
-  }
-
-  part {
-    content_type = "text/plain"
-    content      = local.utility
+    content      = local.oktatest
   }
 
   part {
