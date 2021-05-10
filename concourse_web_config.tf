@@ -165,13 +165,13 @@ write_files:
     owner: root:root
     path: /etc/concourse/okta.cert
     permissions: '0600'
-%{ for team in keys(var.concourse_teams_conf) ~}
+%{for team in keys(var.concourse_teams_conf)~}
   - encoding: b64
     content: ${base64encode(lookup(var.concourse_teams_conf, team))}
     owner: root:root
     path: /root/teams/${team}/team.yml
     permissions: '0600'
-%{ endfor ~}
+%{endfor~}
 EOF
   }
 
