@@ -1,0 +1,8 @@
+  infra team yaml
+  roles:
+    - name: owner
+      saml:
+        groups: ["IDP Infrastructure Admins"]
+    - name: viewer
+      saml:
+        groups: ["IDP Concourse Application Admins", "IDP Concourse Viewers"]

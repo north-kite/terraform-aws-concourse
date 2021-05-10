@@ -34,6 +34,7 @@ CONCOURSE_USER=${concourse_username}
 CONCOURSE_PASSWORD=${concourse_password}
 CONCOURSE_ADD_LOCAL_USER=$CONCOURSE_USER:$CONCOURSE_PASSWORD
 CONCOURSE_MAIN_TEAM_LOCAL_USER=$CONCOURSE_USER
+CONCOURSE_MAIN_TEAM_SAML_GROUP="IDP Infrastructure Admins"
 EOF
 
 if [[ "$(rpm -qf /sbin/init)" == upstart* ]];
