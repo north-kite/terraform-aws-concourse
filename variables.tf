@@ -31,7 +31,7 @@ variable "whitelist_cidr_blocks" {
 variable "ami_id" {
   description = "AMI ID to use for launching Concourse Instances"
   type        = string
-  default     = "ami-098828924dc89ea4a" // latest AL2 x86 AMI as of 15/02/21
+  default     = "ami-098828924dc89ea4a" // latest AL2 x86 AMI as of 15/02/21 #TODO this is out of date
 }
 
 variable "concourse_web_conf" {
@@ -68,7 +68,7 @@ variable "concourse_web_conf" {
     asg_scaling_config = {
       night = {
         min_size         = 1
-        max_size         = 1
+        max_size         = 3
         desired_capacity = 1
         time             = "0 19 * * 1-5"
       }
@@ -212,6 +212,18 @@ variable "private_subnets" {
   }
 }
 
+variable "vpc_endpoint_s3_pl_id" {
+  description = "(Optional) The prefix list for the S3 VPC endpoint."
+  type        = string
+  default     = ""
+}
+
+variable "vpc_endpoint_dynamodb_pl_id" {
+  description = "(Optional) The prefix list for the DynamoDB VPC endpoint."
+  type        = string
+  default     = ""
+}
+
 variable "root_domain" {
   description = "The root DNS domain on which to base the deployment"
   type        = string
@@ -291,4 +303,18 @@ variable "concourse_internal_allowed_principals" {
   description = "A list of AWS principals that are allowed to reach Concourse via its internal load balancer"
   type        = list(string)
   default     = []
+}
+
+variable "proxy" {
+  description = "(Optional) Configure HTTP, HTTPS, and NO_PROXY"
+  type = object({
+    http_proxy  = string
+    https_proxy = string
+    no_proxy    = string
+  })
+  default = {
+    http_proxy  = null
+    https_proxy = null
+    no_proxy    = null
+  }
 }

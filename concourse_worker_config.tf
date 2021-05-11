@@ -19,14 +19,10 @@ locals {
       CONCOURSE_GARDEN_NETWORK_POOL    = var.concourse_worker_conf.garden_network_pool
       CONCOURSE_GARDEN_MAX_CONTAINERS  = var.concourse_worker_conf.garden_max_containers
       CONCOURSE_LOG_LEVEL              = var.concourse_worker_conf.log_level
-
-      //      HTTP_PROXY  = var.proxy.http_proxy
-      //      HTTPS_PROXY = var.proxy.https_proxy
-      //      NO_PROXY    = var.proxy.no_proxy
-      //      http_proxy  = var.proxy.http_proxy
-      //      https_proxy = var.proxy.https_proxy
-      //      no_proxy    = var.proxy.no_proxy
     },
+    var.proxy.http_proxy != null ? { HTTP_PROXY = var.proxy.http_proxy, http_proxy = var.proxy.http_proxy } : {},
+    var.proxy.https_proxy != null ? { HTTPS_PROXY = var.proxy.https_proxy, https_proxy = var.proxy.https_proxy } : {},
+    var.proxy.no_proxy != null ? { NO_PROXY = var.proxy.no_proxy, no_proxy = var.proxy.no_proxy } : {},
     //    var.worker.environment_override
   )
 
@@ -51,10 +47,7 @@ locals {
       tsa_host_key_public_secret_arn = var.concourse_sec.tsa_host_key_public_secret_arn
       worker_key_private_secret_arn  = var.concourse_sec.worker_key_private_secret_arn
       concourse_version              = var.concourse_version
-      //      http_proxy              = var.proxy.http_proxy
-      //      https_proxy             = var.proxy.https_proxy
-      //      no_proxy                = var.proxy.no_proxy
-      name = local.name
+      name                           = local.name
     }
   )
 
@@ -68,6 +61,16 @@ locals {
 data "template_cloudinit_config" "worker_bootstrap" {
   gzip          = true
   base64_encode = true
+
+  part {
+    content_type = "text/cloud-config"
+    content      = templatefile("${path.module}/files/common/configure_proxy.cfg", { proxy_config = var.proxy })
+  }
+
+  part {
+    content_type = "text/x-shellscript"
+    content      = templatefile("${path.module}/files/common/configure_proxy.sh", { proxy_config = var.proxy })
+  }
 
   part {
     content_type = "text/cloud-config"

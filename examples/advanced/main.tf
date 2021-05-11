@@ -49,8 +49,10 @@ module "concourse" {
   project_team  = "kitchen"
   ami_id        = data.aws_ami.amazon_linux_2.id
 
-  create_vpc = false
-  vpc_id     = module.vpc.vpc_id
+  create_vpc                  = false
+  vpc_id                      = module.vpc.vpc_id
+  vpc_endpoint_s3_pl_id       = module.vpc.vpc_endpoint_s3_pl_id
+  vpc_endpoint_dynamodb_pl_id = module.vpc.vpc_endpoint_dynamodb_pl_id
   public_subnets = {
     ids         = module.vpc.public_subnets
     cidr_blocks = module.vpc.public_subnets
@@ -58,6 +60,12 @@ module "concourse" {
   private_subnets = {
     ids         = module.vpc.private_subnets
     cidr_blocks = module.vpc.private_subnets_cidr_blocks
+  }
+
+  proxy = {
+    http_proxy  = "http://${aws_instance.external_proxy.private_ip}:3128"
+    https_proxy = "http://${aws_instance.external_proxy.private_ip}:3128"
+    no_proxy    = "localhost,169.254.169.254,127.0.0.1"
   }
 
   concourse_sec = {

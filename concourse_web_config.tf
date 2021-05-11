@@ -58,14 +58,10 @@ locals {
       CONCOURSE_ENABLE_VOLUME_AUDITING    = true
 
       CONCOURSE_CONTAINER_PLACEMENT_STRATEGY = "random"
-
-      //    HTTP_PROXY  = var.proxy.http_proxy
-      //    HTTPS_PROXY = var.proxy.https_proxy
-      //    NO_PROXY    = var.proxy.no_proxy
-      //    http_proxy  = var.proxy.http_proxy
-      //    https_proxy = var.proxy.https_proxy
-      //    no_proxy    = var.proxy.no_proxy
     },
+    var.proxy.http_proxy != null ? { HTTP_PROXY = var.proxy.http_proxy, http_proxy = var.proxy.http_proxy } : {},
+    var.proxy.https_proxy != null ? { HTTPS_PROXY = var.proxy.https_proxy, https_proxy = var.proxy.https_proxy } : {},
+    var.proxy.no_proxy != null ? { NO_PROXY = var.proxy.no_proxy, no_proxy = var.proxy.no_proxy } : {},
     //  var.web.environment_override
   )
 
@@ -126,6 +122,16 @@ locals {
 data "template_cloudinit_config" "web_bootstrap" {
   gzip          = true
   base64_encode = true
+
+  part {
+    content_type = "text/cloud-config"
+    content      = templatefile("${path.module}/files/common/configure_proxy.cfg", { proxy_config = var.proxy })
+  }
+
+  part {
+    content_type = "text/x-shellscript"
+    content      = templatefile("${path.module}/files/common/configure_proxy.sh", { proxy_config = var.proxy })
+  }
 
   part {
     content_type = "text/cloud-config"
