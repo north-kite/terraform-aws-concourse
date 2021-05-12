@@ -13,8 +13,8 @@ locals {
       CONCOURSE_EXTERNAL_URL  = "https://${local.fqdn}"
       CONCOURSE_AUTH_DURATION = var.concourse_sec.concourse_auth_duration
 
-      CONCOURSE_POSTGRES_DATABASE = aws_rds_cluster.cluster.database_name
-      CONCOURSE_POSTGRES_HOST     = aws_rds_cluster.cluster.endpoint
+      CONCOURSE_POSTGRES_DATABASE = local.database.database_name
+      CONCOURSE_POSTGRES_HOST     = local.database.endpoint
 
       CONCOURSE_SESSION_SIGNING_KEY = "/etc/concourse/session_signing_key"
       CONCOURSE_TSA_AUTHORIZED_KEYS = "/etc/concourse/authorized_worker_keys"

@@ -133,7 +133,7 @@ variable "concourse_worker_conf" {
 }
 
 variable "concourse_db_conf" {
-  description = "database configuration options"
+  description = "(Optional) database configuration options for database creation"
 
   type = object({
     instance_type           = string
@@ -142,6 +142,7 @@ variable "concourse_db_conf" {
     engine_version          = string
     backup_retention_period = number
     preferred_backup_window = string
+    skip_final_snapshot     = bool
   })
 
   default = {
@@ -151,6 +152,31 @@ variable "concourse_db_conf" {
     engine_version          = "10.11"
     backup_retention_period = 14
     preferred_backup_window = "01:00-03:00"
+    skip_final_snapshot     = false
+  }
+}
+
+variable "create_database" {
+  description = "(Optional) Flag to indicate if new database needs to be created."
+  type        = bool
+  default     = true
+}
+
+variable "existing_database_config" {
+  description = "(Optional) Configuration of existing database for Concourse to use"
+  type = object({
+    endpoint          = string
+    db_name           = string
+    user              = string
+    password          = string
+    security_group_id = string
+  })
+  default = {
+    endpoint          = null
+    db_name           = null
+    user              = null
+    password          = null
+    security_group_id = null
   }
 }
 
@@ -317,4 +343,10 @@ variable "proxy" {
     https_proxy = null
     no_proxy    = null
   }
+}
+
+variable "tags" {
+  description = "(Optional) Tags to apply to aws resources"
+  type        = map(string)
+  default     = {}
 }

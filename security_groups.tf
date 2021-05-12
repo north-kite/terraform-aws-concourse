@@ -29,11 +29,6 @@ resource "aws_security_group" "concourse_worker" {
   }
 }
 
-resource "aws_security_group" "concourse_db" {
-  vpc_id = local.vpc.vpc_id
-  tags   = merge(local.common_tags, { Name = "${local.name}-db" })
-}
-
 resource "aws_security_group" "concourse_vpc_endpoints" {
   name        = "ConcourseVPCEndpoints"
   description = "Concourse VPC Endpoints"
@@ -151,17 +146,7 @@ resource "aws_security_group_rule" "web_db_out" {
   from_port                = 5432
   to_port                  = 5432
   security_group_id        = aws_security_group.concourse_web.id
-  source_security_group_id = aws_security_group.concourse_db.id
-}
-
-resource "aws_security_group_rule" "db_web_in" {
-  description              = "inbound connectivity to db from web nodes"
-  type                     = "ingress"
-  protocol                 = "tcp"
-  from_port                = 5432
-  to_port                  = 5432
-  security_group_id        = aws_security_group.concourse_db.id
-  source_security_group_id = aws_security_group.concourse_web.id
+  source_security_group_id = local.database.security_group_id
 }
 
 resource "aws_security_group_rule" "web_outbound_s3_https" {

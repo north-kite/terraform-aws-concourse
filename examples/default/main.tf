@@ -50,6 +50,16 @@ module "concourse" {
     public  = ["10.2.100.0/24", "10.2.101.0/24", "10.2.102.0/24"]
   }
 
+  concourse_db_conf = {
+    instance_type           = "db.t3.medium"
+    db_count                = 1
+    engine                  = "aurora-postgresql"
+    engine_version          = "11.9"
+    backup_retention_period = 14
+    preferred_backup_window = "01:00-03:00"
+    skip_final_snapshot     = true
+  }
+
   concourse_sec = {
     concourse_username                     = var.concourse_credential.web.username
     concourse_password                     = var.concourse_credential.web.password
