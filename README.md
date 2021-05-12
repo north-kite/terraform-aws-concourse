@@ -24,7 +24,7 @@ Example:
     display_name                   = "Okta"
     url                            = "https://my-name.okta.com/app/myapp/someid/sso/saml"
     issuer                         = "http://www.okta.com/abcdef"
-    ca_cert                        = file("${path.module}/files/okta.cert")
+    ca_cert                        = file("${path.module}/files/saml.cert")
     concourse_main_team_saml_group = "saml-group-name-admin"
     concourse_saml_username_attr   = "name"
     concourse_saml_email_attr      = "email"

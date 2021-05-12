@@ -1,6 +1,6 @@
 locals {
 
-  okta_cert_path = "/etc/concourse/okta.cert"
+  saml_cert_path = "/etc/concourse/saml.cert"
 
   //  logger_bootstrap_file = templatefile(
   //  "${path.module}/files/concourse_web/logger_bootstrap.sh",
@@ -11,10 +11,10 @@ locals {
   //  )
 
   web_service_env_vars_saml = var.concourse_saml_conf.enable_saml ? {
-    # Okta SAML Auth
+    # SAML Auth
     CONCOURSE_SAML_DISPLAY_NAME  = var.concourse_saml_conf.display_name
     CONCOURSE_SAML_SSO_URL       = var.concourse_saml_conf.url
-    CONCOURSE_SAML_CA_CERT       = local.okta_cert_path
+    CONCOURSE_SAML_CA_CERT       = local.saml_cert_path
     CONCOURSE_SAML_SSO_ISSUER    = var.concourse_saml_conf.issuer
     CONCOURSE_SAML_USERNAME_ATTR = var.concourse_saml_conf.concourse_saml_username_attr
     CONCOURSE_SAML_EMAIL_ATTR    = var.concourse_saml_conf.concourse_saml_email_attr
@@ -72,7 +72,7 @@ locals {
     # SAML Auth
     CONCOURSE_SAML_DISPLAY_NAME  = var.concourse_saml_conf.display_name
     CONCOURSE_SAML_SSO_URL       = var.concourse_saml_conf.url
-    CONCOURSE_SAML_CA_CERT       = local.okta_cert_path
+    CONCOURSE_SAML_CA_CERT       = local.saml_cert_path
     CONCOURSE_SAML_SSO_ISSUER    = var.concourse_saml_conf.issuer
     CONCOURSE_SAML_USERNAME_ATTR = var.concourse_saml_conf.concourse_saml_username_attr
     CONCOURSE_SAML_EMAIL_ATTR    = var.concourse_saml_conf.concourse_saml_email_attr
@@ -117,11 +117,6 @@ locals {
       worker_key_public_secret_arn           = var.concourse_sec.worker_key_public_secret_arn
       enable_saml                            = var.concourse_saml_conf.enable_saml
       concourse_main_team_saml_group         = var.concourse_saml_conf.concourse_main_team_saml_group
-
-      //    http_proxy              = var.proxy.http_proxy
-      //    https_proxy             = var.proxy.https_proxy
-      //    no_proxy                = var.proxy.no_proxy
-      //    enterprise_github_certs = join(" ", var.enterprise_github_certs)
     }
   )
 
@@ -188,7 +183,7 @@ write_files:
   - encoding: b64
     content: ${base64encode(var.concourse_saml_conf.ca_cert)}
     owner: root:root
-    path: ${local.okta_cert_path}
+    path: ${local.saml_cert_path}
     permissions: '0600'
 %{endif~}
 %{for team in keys(var.concourse_teams_conf)~}
