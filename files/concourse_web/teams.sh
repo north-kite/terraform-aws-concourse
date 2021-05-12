@@ -8,30 +8,27 @@ fly_tarball="/usr/local/concourse/fly-assets/fly-linux-amd64.tgz"
 mkdir -p $HOME/bin
 tar -xzf $fly_tarball -C $HOME/bin/
 
-# wait for Concourse to start
-if [[ "$(rpm -qf /sbin/init)" == upstart* ]]; then
-    # todo: check if upstart service is running
-    :
-else
-    i=0
-    while ! $(systemctl is-active --quiet concourse-web.service); do
-      sleep 5
-      ((i=i+1))
-      if [[ $i -gt 200 ]]; then
-        exit 1
-      fi
-    done
-fi
+echo `date +'%Y %b %d %H:%M:%S'` "Waiting for Concourse to start."
+while [[ "$(netstat -n | grep ${concourse_web_port} | wc -l)" -lt 1 ]]; do
+  sleep 5
+  ((i=i+1))
+  if [[ $i -gt 200 ]]; then
+    exit 1
+    echo `date +'%Y %b %d %H:%M:%S'` "Timed out waiting for Concourse to start."
+  fi
+done
+echo `date +'%Y %b %d %H:%M:%S'` "Concourse service is up and listening on TCP port ${concourse_web_port}"
 
+echo `date +'%Y %b %d %H:%M:%S'` "Creating Concourse teams"
 $HOME/bin/fly --target ${target} login \
---concourse-url http://127.0.0.1:8080 \
+--concourse-url http://127.0.0.1:${concourse_web_port} \
 --username $CONCOURSE_USER \
 --password $CONCOURSE_PASSWORD
 
 team_check=`$HOME/bin/fly -t ${target} teams | grep -v name | grep -v main`
 
 for team in $(ls $HOME/teams); do
-    echo "--- $team ---"
+    echo `date +'%Y %b %d %H:%M:%S'` "--- Creating team: $team ---"
     /root/bin/fly -t ${target} set-team \
     --non-interactive \
     --team-name=$team \

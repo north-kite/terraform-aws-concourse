@@ -51,12 +51,12 @@ resource "aws_lb_listener_rule" "concourse_https" {
 
 resource "aws_lb_target_group" "concourse_web_http" {
   name     = "${local.environment}-concourse-web-http"
-  port     = 8080
+  port     = var.concourse_web_port
   protocol = "HTTP"
   vpc_id   = local.vpc.vpc_id
 
   health_check {
-    port    = "8080"
+    port    = tostring(var.concourse_web_port)
     path    = "/"
     matcher = "200"
   }
@@ -80,7 +80,7 @@ resource "aws_lb_target_group" "web_ssh" {
   # port 8080 requires a security group rule to allow all traffic from the private subnets ip ranges, as we cannot
   # get the addresses of the NLB, from where the healthchecks originate, which is too broad to be accepted
   health_check {
-    port     = "8080"
+    port     = tostring(var.concourse_web_port)
     protocol = "TCP"
   }
 

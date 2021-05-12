@@ -63,8 +63,8 @@ resource "aws_security_group_rule" "web_lb_in_http" {
   description              = "inbound traffic to web nodes from lb"
   type                     = "ingress"
   protocol                 = "tcp"
-  from_port                = 8080
-  to_port                  = 8080
+  from_port                = var.concourse_web_port
+  to_port                  = var.concourse_web_port
   security_group_id        = aws_security_group.concourse_web.id
   source_security_group_id = aws_security_group.concourse_lb.id
 }
@@ -73,8 +73,8 @@ resource "aws_security_group_rule" "lb_web_out_http" {
   description              = "outbound traffic from web nodes to lb"
   type                     = "egress"
   protocol                 = "tcp"
-  from_port                = 8080
-  to_port                  = 8080
+  from_port                = var.concourse_web_port
+  to_port                  = var.concourse_web_port
   security_group_id        = aws_security_group.concourse_lb.id
   source_security_group_id = aws_security_group.concourse_web.id
 }
@@ -83,8 +83,8 @@ resource "aws_security_group_rule" "int_lb_web_in_http" {
   description       = "inbound traffic to web nodes from internal lb"
   type              = "ingress"
   protocol          = "tcp"
-  from_port         = 8080
-  to_port           = 8080
+  from_port         = var.concourse_web_port
+  to_port           = var.concourse_web_port
   security_group_id = aws_security_group.concourse_web.id
   cidr_blocks       = local.vpc.private_subnets_cidr_blocks
 }
