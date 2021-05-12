@@ -297,14 +297,14 @@ variable "concourse_saml_conf" {
 
   default = {
     enable_saml                    = false
-    display_name                   = ""
-    url                            = ""
-    ca_cert                        = ""
-    issuer                         = ""
-    concourse_main_team_saml_group = ""
-    concourse_saml_username_attr   = ""
-    concourse_saml_email_attr      = ""
-    concourse_saml_groups_attr     = ""
+    display_name                   = null
+    url                            = null
+    ca_cert                        = null
+    issuer                         = null
+    concourse_main_team_saml_group = null
+    concourse_saml_username_attr   = null
+    concourse_saml_email_attr      = null
+    concourse_saml_groups_attr     = null
   }
 }
 
