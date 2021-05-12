@@ -184,7 +184,7 @@ write_files:
     owner: root:root
     path: /etc/systemd/system/concourse-web.service
     permissions: '0644'
-%{if var.concourse_saml_conf.enable_saml == true~}
+%{if var.concourse_saml_conf.enable_saml~}
   - encoding: b64
     content: ${base64encode(var.concourse_saml_conf.ca_cert)}
     owner: root:root
