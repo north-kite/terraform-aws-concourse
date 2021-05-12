@@ -10,7 +10,7 @@ locals {
   //  }
   //  )
 
-  web_service_env_vars_saml = var.concourse_saml_conf.enable_saml == true ? {
+  web_service_env_vars_saml = var.concourse_saml_conf.enable_saml ? {
     # Okta SAML Auth
     CONCOURSE_SAML_DISPLAY_NAME  = var.concourse_saml_conf.display_name
     CONCOURSE_SAML_SSO_URL       = var.concourse_saml_conf.url
