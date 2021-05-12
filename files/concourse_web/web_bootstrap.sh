@@ -34,7 +34,7 @@ CONCOURSE_USER=${concourse_username}
 CONCOURSE_PASSWORD=${concourse_password}
 CONCOURSE_ADD_LOCAL_USER=$CONCOURSE_USER:$CONCOURSE_PASSWORD
 CONCOURSE_MAIN_TEAM_LOCAL_USER=$CONCOURSE_USER
-%{ if enable_saml == true ~}
+%{ if enable_saml ~}
 CONCOURSE_MAIN_TEAM_SAML_GROUP="${concourse_main_team_saml_group}"
 %{ endif ~}
 EOF
