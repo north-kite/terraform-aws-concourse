@@ -51,8 +51,8 @@ locals {
     private_subnets             = var.private_subnets.ids
     private_subnets_cidr_blocks = var.private_subnets.cidr_blocks
     public_subnets              = var.public_subnets.ids
-    vpc_endpoint_s3_pl_id       = ""
-    vpc_endpoint_dynamodb_pl_id = ""
+    vpc_endpoint_s3_pl_id       = var.vpc_endpoint_s3_pl_id
+    vpc_endpoint_dynamodb_pl_id = var.vpc_endpoint_dynamodb_pl_id
   }
 }
 
