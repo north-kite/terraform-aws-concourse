@@ -68,7 +68,16 @@ locals {
     var.proxy.https_proxy != null ? { HTTPS_PROXY = var.proxy.https_proxy, https_proxy = var.proxy.https_proxy } : {},
     var.proxy.no_proxy != null ? { NO_PROXY = var.proxy.no_proxy, no_proxy = var.proxy.no_proxy } : {},
     //  var.web.environment_override
-    local.web_service_env_vars_saml
+    var.concourse_saml_conf.enable_saml ? {
+    # SAML Auth
+    CONCOURSE_SAML_DISPLAY_NAME  = var.concourse_saml_conf.display_name
+    CONCOURSE_SAML_SSO_URL       = var.concourse_saml_conf.url
+    CONCOURSE_SAML_CA_CERT       = local.okta_cert_path
+    CONCOURSE_SAML_SSO_ISSUER    = var.concourse_saml_conf.issuer
+    CONCOURSE_SAML_USERNAME_ATTR = var.concourse_saml_conf.concourse_saml_username_attr
+    CONCOURSE_SAML_EMAIL_ATTR    = var.concourse_saml_conf.concourse_saml_email_attr
+    CONCOURSE_SAML_GROUPS_ATTR   = var.concourse_saml_conf.concourse_saml_groups_attr
+  } : {},
   )
 
   web_systemd_file = templatefile(
