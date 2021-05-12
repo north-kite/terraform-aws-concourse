@@ -39,8 +39,9 @@ data "template_cloudinit_config" "proxy_cloud_init" {
 resource "aws_instance" "external_proxy" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = "t3.small"
+  key_name               = var.ec2_key_name
   subnet_id              = module.vpc.public_subnets[0]
   vpc_security_group_ids = [aws_security_group.allow_proxy.id]
   user_data              = data.template_cloudinit_config.proxy_cloud_init.rendered
-  tags                   = { Name = "egress-proxy" }
+  tags                   = merge(var.tags, { Name = "egress-proxy" })
 }

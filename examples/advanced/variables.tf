@@ -31,3 +31,21 @@ variable "cidr" {
     public  = list(string)
   })
 }
+
+variable "ec2_key_name" {
+  description = "(Optional) EC2 Key Pair name, used for connecting to instances, primarily for debugging"
+  type        = string
+  default     = ""
+}
+
+variable "tags" {
+  description = "(Optional) additional tags to apply to resources"
+  type        = map(string)
+  default     = {}
+}
+
+variable "postgres_master_user" {
+  description = "(Optional) The master user for postgresql"
+  type        = string
+  default     = "root"
+}

@@ -68,6 +68,16 @@ module "concourse" {
     no_proxy    = "localhost,169.254.169.254,127.0.0.1"
   }
 
+  create_database = false
+
+  existing_database_config = {
+    endpoint          = aws_instance.external_database.private_ip
+    db_name           = var.concourse_credential.db.username
+    user              = var.concourse_credential.db.username
+    password          = var.concourse_credential.db.password
+    security_group_id = aws_security_group.database.id
+  }
+
   concourse_sec = {
     concourse_username                     = var.concourse_credential.web.username
     concourse_password                     = var.concourse_credential.web.password
