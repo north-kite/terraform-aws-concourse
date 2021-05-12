@@ -34,9 +34,12 @@ CONCOURSE_USER=${concourse_username}
 CONCOURSE_PASSWORD=${concourse_password}
 CONCOURSE_ADD_LOCAL_USER=$CONCOURSE_USER:$CONCOURSE_PASSWORD
 CONCOURSE_MAIN_TEAM_LOCAL_USER=$CONCOURSE_USER
-CONCOURSE_MAIN_TEAM_SAML_GROUP="IDP Infrastructure Admins"
+%{ if enable_saml == true ~}
+CONCOURSE_MAIN_TEAM_SAML_GROUP="${concourse_main_team_saml_group}"
+%{ endif ~}
 EOF
 
+echo `date +'%Y %b %d %H:%M:%S'` "Starting Concourse service"
 if [[ "$(rpm -qf /sbin/init)" == upstart* ]];
 then
     initctl start concourse-web
@@ -46,7 +49,5 @@ else
     while ! $(systemctl is-active --quiet concourse-web.service); do
       sleep 5
     done
+    echo `date +'%Y %b %d %H:%M:%S'` "Concourse service started"
 fi
-
-# Concourse takes some time to startup
-sleep 20

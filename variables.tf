@@ -230,6 +230,11 @@ variable "concourse_version" {
   default     = "7.2.0"
 }
 
+variable "concourse_web_port" {
+  type        = number
+  description = "TCP port that Concourse web service listens on. Do not change."
+  default     = 8080
+}
 
 variable "concourse_sec" {
   description = "Concourse Security Config"
@@ -267,17 +272,27 @@ variable "concourse_saml_conf" {
   description = "Concourse SAML config for e.g. Okta"
 
   type = object({
-    display_name = string
-    url          = string
-    ca_cert      = string
-    issuer       = string
+    enable_saml                    = bool
+    display_name                   = string
+    url                            = string
+    ca_cert                        = string
+    issuer                         = string
+    concourse_main_team_saml_group = string
+    concourse_saml_username_attr   = string
+    concourse_saml_email_attr      = string
+    concourse_saml_groups_attr     = string
   })
 
   default = {
-    display_name = ""
-    url          = ""
-    ca_cert      = ""
-    issuer       = ""
+    enable_saml                    = false
+    display_name                   = ""
+    url                            = ""
+    ca_cert                        = ""
+    issuer                         = ""
+    concourse_main_team_saml_group = ""
+    concourse_saml_username_attr   = ""
+    concourse_saml_email_attr      = ""
+    concourse_saml_groups_attr     = ""
   }
 }
 

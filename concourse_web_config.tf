@@ -1,4 +1,7 @@
 locals {
+
+  okta_cert_path = "/etc/concourse/okta.cert"
+
   //  logger_bootstrap_file = templatefile(
   //  "${path.module}/files/concourse_web/logger_bootstrap.sh",
   //  {
@@ -6,6 +9,17 @@ locals {
   //    https_proxy                           = var.proxy.https_proxy
   //  }
   //  )
+
+  web_service_env_vars_saml = var.concourse_saml_conf.enable_saml == true ? {
+    # Okta SAML Auth
+    CONCOURSE_SAML_DISPLAY_NAME  = var.concourse_saml_conf.display_name
+    CONCOURSE_SAML_SSO_URL       = var.concourse_saml_conf.url
+    CONCOURSE_SAML_CA_CERT       = local.okta_cert_path
+    CONCOURSE_SAML_SSO_ISSUER    = var.concourse_saml_conf.issuer
+    CONCOURSE_SAML_USERNAME_ATTR = var.concourse_saml_conf.concourse_saml_username_attr
+    CONCOURSE_SAML_EMAIL_ATTR    = var.concourse_saml_conf.concourse_saml_email_attr
+    CONCOURSE_SAML_GROUPS_ATTR   = var.concourse_saml_conf.concourse_saml_groups_attr
+  } : {}
 
   web_service_env_vars = merge(
     {
@@ -30,15 +44,6 @@ locals {
       CONCOURSE_AWS_SECRETSMANAGER_PIPELINE_SECRET_TEMPLATE = "/concourse/{{.Team}}/{{.Pipeline}}/{{.Secret}}"
       CONCOURSE_AWS_SECRETSMANAGER_TEAM_SECRET_TEMPLATE     = "/concourse/{{.Team}}/{{.Secret}}"
       CONCOURSE_SECRET_CACHE_DURATION                       = "1m"
-
-      # Okta SAML Auth
-      CONCOURSE_SAML_DISPLAY_NAME  = var.concourse_saml_conf.display_name
-      CONCOURSE_SAML_SSO_URL       = var.concourse_saml_conf.url
-      CONCOURSE_SAML_CA_CERT       = "/etc/concourse/okta.cert"
-      CONCOURSE_SAML_SSO_ISSUER    = var.concourse_saml_conf.issuer
-      CONCOURSE_SAML_USERNAME_ATTR = "name"
-      CONCOURSE_SAML_EMAIL_ATTR    = "email"
-      CONCOURSE_SAML_GROUPS_ATTR   = "groups"
 
       # UC GitHub Auth
       CONCOURSE_GITHUB_HOST = var.github_url
@@ -67,6 +72,7 @@ locals {
       //    no_proxy    = var.proxy.no_proxy
     },
     //  var.web.environment_override
+    local.web_service_env_vars_saml
   )
 
   web_systemd_file = templatefile(
@@ -104,6 +110,8 @@ locals {
       tsa_host_key_public_secret_arn         = var.concourse_sec.tsa_host_key_public_secret_arn
       worker_key_private_secret_arn          = var.concourse_sec.worker_key_private_secret_arn
       worker_key_public_secret_arn           = var.concourse_sec.worker_key_public_secret_arn
+      enable_saml                            = var.concourse_saml_conf.enable_saml
+      concourse_main_team_saml_group         = var.concourse_saml_conf.concourse_main_team_saml_group
 
       //    http_proxy              = var.proxy.http_proxy
       //    https_proxy             = var.proxy.https_proxy
@@ -119,6 +127,7 @@ locals {
       target             = "aws-concourse"
       concourse_username = var.concourse_sec.concourse_username
       concourse_password = var.concourse_sec.concourse_password
+      concourse_web_port = tostring(var.concourse_web_port)
     }
   )
 }
@@ -160,11 +169,13 @@ write_files:
     owner: root:root
     path: /etc/systemd/system/concourse-web.service
     permissions: '0644'
+%{if var.concourse_saml_conf.enable_saml == true~}
   - encoding: b64
     content: ${base64encode(var.concourse_saml_conf.ca_cert)}
     owner: root:root
-    path: /etc/concourse/okta.cert
+    path: ${local.okta_cert_path}
     permissions: '0600'
+%{endif~}
 %{for team in keys(var.concourse_teams_conf)~}
   - encoding: b64
     content: ${base64encode(lookup(var.concourse_teams_conf, team))}

@@ -2,11 +2,43 @@ A Terraform module to deploy a Concourse stack in AWS
 
 Example usage to follow.
 
+### Configuring Concourse to use SAML
+`concourse_saml_conf` - (Optional) Specifies SAML config to use with e.g. Okta. Expects the following arguments:
+* `enable_saml` - A boolean flag to enable or disable SAML configuration. Defaults false.
+* `display_name` - Sets `CONCOURSE_SAML_DISPLAY_NAME` environment variable.
+* `url` - Sets `CONCOURSE_SAML_SSO_URL` environment variable.
+* `issuer` - Sets `CONCOURSE_SAML_SSO_ISSUER` environment variable.
+* `ca_cert`- A string containing CA certificate. 
+* `concourse_main_team_saml_group` - Sets `CONCOURSE_MAIN_TEAM_SAML_GROUP` environment variable.
+* `concourse_saml_username_attr` - Sets `CONCOURSE_SAML_USERNAME_ATTR` environment variable.
+* `concourse_saml_email_attr` - Sets `CONCOURSE_SAML_EMAIL_ATTR` environment variable.
+* `concourse_saml_groups_attr` - Sets `CONCOURSE_SAML_GROUPS_ATTR` environment variable.
+
+For details on environment variables see [Concourse SAML documentation](https://concourse-ci.org/generic-saml-auth.html).
+Additional details on configuring attributes within Okta are available [here](https://github.com/concourse/concourse/pull/5998).
+
+Example:
+```
+  concourse_saml_conf = {
+    enable_saml                    = true
+    display_name                   = "Okta"
+    url                            = "https://my-name.okta.com/app/myapp/someid/sso/saml"
+    issuer                         = "http://www.okta.com/abcdef"
+    ca_cert                        = file("${path.module}/files/okta.cert")
+    concourse_main_team_saml_group = "saml-group-name-admin"
+    concourse_saml_username_attr   = "name"
+    concourse_saml_email_attr      = "email"
+    concourse_saml_groups_attr     = "groups"
+  }
+```
+The example above assumes that a group named `saml-group-name-admin` has been created in Okta. This group will be added to `main` team in Concourse thus giving its members full Concourse admin permissions. 
+
+### Configuring additional Concourse teams
+
 `concourse_teams_conf` - (Optional) Specifies additional teams to create in Concourse. Expects the following:
 * `key` - Name of the team 
 * `value` - Role configuration in yaml format with a single field, `roles:`, pointing to a list of role authorization configs (see [Concourse docs](https://concourse-ci.org/managing-teams.html#setting-roles))
 ```
-...
   concourse_teams_conf = {
     my_team_name = <<EOF
 roles:
@@ -31,5 +63,10 @@ EOF
       groups: ["saml-group-name-member", "saml-group-name-guest"]
 EOF
   }
-...
 ```
+The example above will create 2 teams in addition to `main` team, `infra` and `app`. In `infra` team,
+* members of `saml-group-name-admin` SAML group will be given `owner` role within the team.
+* members of `saml-group-name-member` SAML group will be given `member` role within the team.
+* members of `saml-group-name-guest` SAML group will be given `viewer` role within the team.
+
+For details on Concourse user roles see [Concourse documentation](https://concourse-ci.org/user-roles.html).
