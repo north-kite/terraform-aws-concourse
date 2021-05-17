@@ -78,7 +78,7 @@ By default this module will create an IAM role and associate it with worker inst
 
 Example:
 Imagine a scenario with two AWS accounts, one called `mgmt` and another `dev`. Concourse is deployed to `mgmt` but should also be able to access `dev`. To enable this,
-* create a role name `ci-worker` in `mgmt` account
+* create a role named `ci-worker` in `mgmt` account
 * create a role named `ci` in both accounts
 * configure both `ci` roles with trust policy that adds `arn:aws:iam::<mgmt-account-id>:role/ci-worker` to trusted entities
 * when calling this module in `mgmt`, set

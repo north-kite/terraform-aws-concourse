@@ -22,8 +22,6 @@ aws ec2 create-tags --resources $INSTANCE_ID --tags Key=Name,Value=$HOSTNAME
 # Git etc expect ca-certificates.crt, not ca-bundle.crt
 ln -s /etc/ssl/certs/ca-bundle.crt /etc/ssl/certs/ca-certificates.crt
 
-#echo abc
-
 touch /var/spool/cron/root
 echo "*/3 * * * * /home/root/healthcheck.sh" >> /var/spool/cron/root
 chmod 644 /var/spool/cron/root
