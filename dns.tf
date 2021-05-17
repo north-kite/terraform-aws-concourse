@@ -1,5 +1,5 @@
 data "aws_route53_zone" "public" {
-  name         = local.hosted_zone
+  name         = var.root_domain
   private_zone = false
 }
 
@@ -10,6 +10,22 @@ resource "aws_route53_record" "concourse_web_lb" {
   ttl             = 60
   type            = "CNAME"
   zone_id         = data.aws_route53_zone.public.zone_id
+}
+
+data "aws_route53_zone" "private" {
+  count        = var.is_internal ? 1 : 0
+  name         = var.root_domain
+  private_zone = true
+}
+
+resource "aws_route53_record" "concourse_web_lb_private" {
+  count           = var.is_internal ? 1 : 0
+  allow_overwrite = true
+  name            = local.fqdn
+  records         = [aws_lb.concourse_lb.dns_name]
+  ttl             = 60
+  type            = "CNAME"
+  zone_id         = data.aws_route53_zone.private[0].zone_id
 }
 
 resource "aws_route53_record" "concourse_int_lb" {

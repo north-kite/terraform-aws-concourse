@@ -260,6 +260,12 @@ variable "root_domain" {
   default     = "cicd.aws"
 }
 
+variable "is_internal" {
+  description = "(Optional) If `true` then the 'external' load balancer is deployed as internal. Used in scenarios where routing to Concourse is over a VPN into AWS, instead of via internet gateway. If set to `true` then both public and private hosted zones with the `var.root_domain` will need to exist (public for validating ACM certificate, private for routing)."
+  type        = bool
+  default     = false
+}
+
 variable "github_url" {
   type        = string
   description = "The URL for the GitHub used for OAuth"

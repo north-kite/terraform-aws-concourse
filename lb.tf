@@ -1,6 +1,6 @@
 resource "aws_lb" "concourse_lb" {
   name               = "${local.environment}-concourse-web"
-  internal           = false
+  internal           = var.is_internal
   load_balancer_type = "application"
   subnets            = local.vpc.public_subnets
   security_groups    = [aws_security_group.concourse_lb.id]

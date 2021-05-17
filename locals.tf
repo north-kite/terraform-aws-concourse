@@ -1,9 +1,8 @@
 locals {
   name        = var.project_name
   environment = terraform.workspace == "default" ? "mgmt-dev" : replace(trimprefix(terraform.workspace, "kitchen-terraform-"), "-local", "")
-  hosted_zone = var.root_domain
-  fqdn        = join(".", [local.name, local.hosted_zone])
-  fqdn_int    = join(".", [local.name, "int", local.hosted_zone])
+  fqdn        = join(".", [local.name, var.root_domain])
+  fqdn_int    = join(".", [local.name, "int", var.root_domain])
   account     = data.aws_caller_identity.current.account_id
 
   zone_count = length(data.aws_availability_zones.current.zone_ids)
