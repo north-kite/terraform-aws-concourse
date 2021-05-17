@@ -71,7 +71,7 @@ The example above will create 2 teams in addition to `main` team, `infra` and `a
 
 For details on Concourse user roles see [Concourse documentation](https://concourse-ci.org/user-roles.html).
 
-### Using custom IAM role with Concourse workers to enable cross-account
+### Using custom IAM role with Concourse workers to enable cross-account access
 By default this module will create an IAM role and associate it with worker instance profile. This role will be allowed to assume `ci` IAM role in the same account. However in more advanced scenarios where Concourse workers have to assume cross-account roles you'll have to create those roles and provide input to the module.
 * `instance_iam_role` - (Optional) A string specifying name of the IAM role that will be associated with Concourse worker instance profile. The role must exist and have a trust policy set up so that EC2 service is allowed to assume it. 
 * `worker_assume_ci_roles` - (Optional) - A list of IAM role ARNs that worker instance should be allowed to assume. 
