@@ -9,7 +9,8 @@ resource "aws_iam_role" "concourse_web" {
 }
 
 resource "aws_iam_role" "concourse_worker" {
-  name = "${local.environment}-concourse-worker"
+  count = var.concourse_worker_conf.instance_iam_role == null ? 1 : 0
+  name  = "${local.environment}-concourse-worker"
 
   tags = merge(
     local.common_tags,
@@ -24,8 +25,8 @@ resource "aws_iam_instance_profile" "concourse_web" {
 }
 
 resource "aws_iam_instance_profile" "concourse_worker" {
-  name = aws_iam_role.concourse_worker.name
-  role = aws_iam_role.concourse_worker.name
+  name = var.concourse_worker_conf.instance_iam_role == null ? aws_iam_role.concourse_worker[0].id : var.concourse_worker_conf.instance_iam_role
+  role = var.concourse_worker_conf.instance_iam_role == null ? aws_iam_role.concourse_worker[0].id : var.concourse_worker_conf.instance_iam_role
 }
 
 resource "aws_iam_role_policy_attachment" "concourse_web_cloudwatch_logging" {
@@ -35,7 +36,7 @@ resource "aws_iam_role_policy_attachment" "concourse_web_cloudwatch_logging" {
 
 resource "aws_iam_role_policy_attachment" "concourse_worker_cloudwatch_logging" {
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
-  role       = aws_iam_role.concourse_worker.id
+  role       = var.concourse_worker_conf.instance_iam_role == null ? aws_iam_role.concourse_worker[0].id : var.concourse_worker_conf.instance_iam_role
 }
 
 resource "aws_iam_role_policy_attachment" "concourse_web_ssm" {
@@ -45,7 +46,7 @@ resource "aws_iam_role_policy_attachment" "concourse_web_ssm" {
 
 resource "aws_iam_role_policy_attachment" "concourse_worker_ssm" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
-  role       = aws_iam_role.concourse_worker.id
+  role       = var.concourse_worker_conf.instance_iam_role == null ? aws_iam_role.concourse_worker[0].id : var.concourse_worker_conf.instance_iam_role
 }
 
 resource "aws_iam_role_policy_attachment" "concourse_web_secrets_manager" {
@@ -78,7 +79,7 @@ data "aws_iam_policy_document" "concourse_web_secrets_manager" {
 
 resource "aws_iam_role_policy_attachment" "concourse_worker_secrets_manager" {
   policy_arn = aws_iam_policy.concourse_worker_secrets_manager.arn
-  role       = aws_iam_role.concourse_worker.id
+  role       = var.concourse_worker_conf.instance_iam_role == null ? aws_iam_role.concourse_worker[0].id : var.concourse_worker_conf.instance_iam_role
 }
 
 resource "aws_iam_policy" "concourse_worker_secrets_manager" {
@@ -136,7 +137,7 @@ resource "aws_iam_policy" "concourse_worker_autoscaling" {
 
 resource "aws_iam_role_policy_attachment" "concourse_worker_autoscaling" {
   policy_arn = aws_iam_policy.concourse_worker_autoscaling.arn
-  role       = aws_iam_role.concourse_worker.id
+  role       = var.concourse_worker_conf.instance_iam_role == null ? aws_iam_role.concourse_worker[0].id : var.concourse_worker_conf.instance_iam_role
 }
 
 data "aws_iam_policy_document" "concourse_tag_ec2" {
@@ -158,10 +159,10 @@ resource "aws_iam_policy" "concourse_tag_ec2" {
 
 resource "aws_iam_role_policy_attachment" "concourse_tag_ec2" {
   policy_arn = aws_iam_policy.concourse_tag_ec2.arn
-  role       = aws_iam_role.concourse_worker.id
+  role       = var.concourse_worker_conf.instance_iam_role == null ? aws_iam_role.concourse_worker[0].id : var.concourse_worker_conf.instance_iam_role
 }
 
-data "aws_iam_policy_document" "concourse_worker_assume_ci_role" {
+data "aws_iam_policy_document" "concourse_worker_assume_ci_role_default" {
   statement {
     sid = "AllowConcourseWorkerAssumeCIRole"
     actions = [
@@ -172,13 +173,24 @@ data "aws_iam_policy_document" "concourse_worker_assume_ci_role" {
   }
 }
 
+data "aws_iam_policy_document" "concourse_worker_assume_ci_role_custom" {
+  statement {
+    sid = "AllowConcourseWorkerAssumeCIRole"
+    actions = [
+      "sts:AssumeRole",
+    ]
+
+    resources = var.concourse_worker_conf.worker_assume_ci_roles
+  }
+}
+
 resource "aws_iam_policy" "concourse_worker_assume_ci_role" {
   name        = "${local.environment}-concourse-worker-assume-ci-role"
   description = "Allow Concourse Workers to assume the CI Role"
-  policy      = data.aws_iam_policy_document.concourse_worker_assume_ci_role.json
+  policy      = var.concourse_worker_conf.instance_iam_role == null ? data.aws_iam_policy_document.concourse_worker_assume_ci_role_default.json : data.aws_iam_policy_document.concourse_worker_assume_ci_role_custom.json
 }
 
 resource "aws_iam_role_policy_attachment" "concourse_worker_assume_ci_role" {
   policy_arn = aws_iam_policy.concourse_worker_assume_ci_role.arn
-  role       = aws_iam_role.concourse_worker.id
+  role       = var.concourse_worker_conf.instance_iam_role == null ? aws_iam_role.concourse_worker[0].id : var.concourse_worker_conf.instance_iam_role
 }

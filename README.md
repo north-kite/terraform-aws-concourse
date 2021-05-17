@@ -70,3 +70,17 @@ The example above will create 2 teams in addition to `main` team, `infra` and `a
 * members of `saml-group-name-guest` SAML group will be given `viewer` role within the team.
 
 For details on Concourse user roles see [Concourse documentation](https://concourse-ci.org/user-roles.html).
+
+### Using custom IAM role with Concourse workers to enable cross-account
+By default this module will create an IAM role and associate it with worker instance profile. This role will be allowed to assume `ci` IAM role in the same account. However in more advanced scenarios where Concourse workers have to assume cross-account roles you'll have to create those roles and provide input to the module.
+* `instance_iam_role` - (Optional) A string specifying name of the IAM role that will be associated with Concourse worker instance profile. The role must exist and have a trust policy set up so that EC2 service is allowed to assume it. 
+* `worker_assume_ci_roles` - (Optional) - A list of IAM role ARNs that worker instance should be allowed to assume. 
+
+Example:
+Imagine a scenario with two AWS accounts, one called `mgmt` and another `dev`. Concourse is deployed to `mgmt` but should also be able to access `dev`. To enable this,
+* create a role name `ci-worker` in `mgmt` account
+* create a role named `ci` in both accounts
+* configure both `ci` roles with trust policy that adds `arn:aws:iam::<mgmt-account-id>:role/ci-worker` to trusted entities
+* when calling this module in `mgmt`, set
+    * `instance_iam_role` to `ci-worker`
+    * `worker_assume_ci_roles` to `[<ARN of ci role in mgmt>, <ARN of ci role in dev>]`

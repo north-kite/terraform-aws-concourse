@@ -43,11 +43,19 @@ resource "aws_autoscaling_group" "worker" {
 
   launch_template {
     id      = aws_launch_template.concourse_worker.id
-    version = "$Latest"
+    version = aws_launch_template.concourse_worker.latest_version
   }
 
   lifecycle {
     create_before_destroy = true
+  }
+
+  instance_refresh {
+    strategy = "Rolling"
+    preferences {
+      min_healthy_percentage = 0
+    }
+    #triggers = ["launch_template"]
   }
 
   enabled_metrics = [
