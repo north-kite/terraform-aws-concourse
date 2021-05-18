@@ -43,6 +43,7 @@ variable "concourse_web_conf" {
     instance_type         = string
     environment_override  = map(string)
     key_name              = string
+    min_healthy_percentage = number
     asg_scaling_config = object({
       night = object({
         min_size         = number
@@ -65,6 +66,7 @@ variable "concourse_web_conf" {
     count                 = 1
     environment_override  = {}
     key_name              = null
+    min_healthy_percentage = 0
     asg_scaling_config = {
       night = {
         min_size         = 1
@@ -94,6 +96,7 @@ variable "concourse_worker_conf" {
     garden_max_containers  = string
     log_level              = string
     key_name               = string
+    min_healthy_percentage = number
     asg_scaling_config = object({
       night = object({
         min_size         = number
@@ -119,6 +122,7 @@ variable "concourse_worker_conf" {
     garden_max_containers  = "350"
     log_level              = "error"
     key_name               = null
+    min_healthy_percentage = 0
     asg_scaling_config = {
       night = {
         min_size         = 1
