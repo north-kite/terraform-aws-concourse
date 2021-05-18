@@ -38,11 +38,12 @@ variable "concourse_web_conf" {
   description = "Concourse Web config options"
 
   type = object({
-    count                 = number
-    max_instance_lifetime = number
-    instance_type         = string
-    environment_override  = map(string)
-    key_name              = string
+    count                  = number
+    max_instance_lifetime  = number
+    instance_type          = string
+    environment_override   = map(string)
+    key_name               = string
+    min_healthy_percentage = number
     asg_scaling_config = object({
       night = object({
         min_size         = number
@@ -60,11 +61,12 @@ variable "concourse_web_conf" {
   })
 
   default = {
-    instance_type         = "t2.2xlarge"
-    max_instance_lifetime = 60 * 60 * 24 * 7
-    count                 = 1
-    environment_override  = {}
-    key_name              = null
+    instance_type          = "t2.2xlarge"
+    max_instance_lifetime  = 60 * 60 * 24 * 7
+    count                  = 1
+    environment_override   = {}
+    key_name               = null
+    min_healthy_percentage = 0
     asg_scaling_config = {
       night = {
         min_size         = 1
@@ -94,6 +96,7 @@ variable "concourse_worker_conf" {
     garden_max_containers  = string
     log_level              = string
     key_name               = string
+    min_healthy_percentage = number
     asg_scaling_config = object({
       night = object({
         min_size         = number
@@ -119,6 +122,7 @@ variable "concourse_worker_conf" {
     garden_max_containers  = "350"
     log_level              = "error"
     key_name               = null
+    min_healthy_percentage = 0
     asg_scaling_config = {
       night = {
         min_size         = 1

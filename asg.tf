@@ -18,12 +18,19 @@ resource "aws_autoscaling_group" "concourse_web" {
 
   launch_template {
     id      = aws_launch_template.concourse_web.id
-    version = "$Latest"
+    version = aws_launch_template.concourse_web.latest_version
   }
 
   lifecycle {
     create_before_destroy = true
     ignore_changes        = [max_size]
+  }
+
+  instance_refresh {
+    strategy = "Rolling"
+    preferences {
+      min_healthy_percentage = var.concourse_web_conf.min_healthy_percentage
+    }
   }
 }
 
@@ -53,7 +60,7 @@ resource "aws_autoscaling_group" "worker" {
   instance_refresh {
     strategy = "Rolling"
     preferences {
-      min_healthy_percentage = 0
+      min_healthy_percentage = var.concourse_worker_conf.min_healthy_percentage
     }
   }
 

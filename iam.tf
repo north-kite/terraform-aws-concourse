@@ -63,7 +63,8 @@ resource "aws_iam_policy" "concourse_web_secrets_manager" {
 data "aws_iam_policy_document" "concourse_web_secrets_manager" {
   statement {
     actions = [
-      "secretsmanager:GetSecretValue"
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:DescribeSecret",
     ]
 
     resources = [
@@ -73,6 +74,9 @@ data "aws_iam_policy_document" "concourse_web_secrets_manager" {
       var.concourse_sec.tsa_host_key_public_secret_arn,
       var.concourse_sec.worker_key_private_secret_arn,
       var.concourse_sec.worker_key_public_secret_arn,
+      "arn:aws:secretsmanager:*:*:secret:/concourse/*",
+      # What's tghis ARN below? See Concourse docs here https://concourse-ci.org/aws-asm-credential-manager.html#aws-secretsmanager-iam-permissions
+      "arn:aws:secretsmanager:*:*:secret:__concourse-health-check-??????",
     ]
   }
 }
