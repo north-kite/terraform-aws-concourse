@@ -201,7 +201,7 @@ resource "aws_security_group_rule" "worker_outbound_s3_https" {
 }
 
 resource "aws_security_group_rule" "worker_outbound_s3_http" {
-  count             = local.vpc.vpc_endpoint_s3_pl_id != "" ? 1 : 0
+  count             = var.create_vpc || var.vpc_endpoint_s3_pl_id != "" ? 1 : 0
   description       = "s3 outbound http connectivity (for YUM updates)"
   type              = "egress"
   protocol          = "tcp"
@@ -212,7 +212,7 @@ resource "aws_security_group_rule" "worker_outbound_s3_http" {
 }
 
 resource "aws_security_group_rule" "web_outbound_dynamodb_https" {
-  count             = local.vpc.vpc_endpoint_dynamodb_pl_id != "" ? 1 : 0
+  count             = var.create_vpc || var.vpc_endpoint_dynamodb_pl_id != "" ? 1 : 0
   description       = "dynamodb outbound https connectivity"
   type              = "egress"
   protocol          = "tcp"
