@@ -201,7 +201,7 @@ resource "aws_security_group_rule" "worker_outbound_s3_https" {
 }
 
 resource "aws_security_group_rule" "worker_outbound_s3_http" {
-  count             = var.create_vpc || var.vpc_endpoint_s3_pl_id ? 1 : 0
+  count             = var.create_vpc || var.vpc_endpoint_s3_pl_id != "" ? 1 : 0
   description       = "s3 outbound http connectivity (for YUM updates)"
   type              = "egress"
   protocol          = "tcp"
