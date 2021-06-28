@@ -25,6 +25,12 @@ variable "vpc" {
   })
 }
 
+variable "aws_availability_zones_names" {
+  description = "(Optional) List of AWS availability zone names to use. If unset, then all available availability zones will be usable by RDS (dependant on number of instances)"
+  type        = list(string)
+  default     = null
+}
+
 variable "environment" {
   description = "(Optional) Resource environment tag (i.e. dev, stage, prod). Used in resource names"
   type        = string
