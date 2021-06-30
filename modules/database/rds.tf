@@ -36,6 +36,7 @@ resource "aws_rds_cluster" "cluster" {
     ignore_changes = [
       engine_version,
       snapshot_identifier,
+      availability_zones, # See PR for explanation: https://github.com/IDPdigital/terraform-aws-concourse/pull/39
     ]
   }
 }
