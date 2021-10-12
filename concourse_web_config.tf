@@ -34,9 +34,6 @@ locals {
       CONCOURSE_AWS_SECRETSMANAGER_TEAM_SECRET_TEMPLATE     = "/concourse/{{.Team}}/{{.Secret}}"
       CONCOURSE_SECRET_CACHE_DURATION                       = "1m"
 
-      # UC GitHub Auth
-      CONCOURSE_GITHUB_HOST = var.github_url
-
       CONCOURSE_METRICS_HOST_NAME     = local.name
       CONCOURSE_CAPTURE_ERROR_METRICS = true
 
@@ -65,6 +62,11 @@ locals {
       CONCOURSE_SAML_USERNAME_ATTR = var.concourse_saml_conf.concourse_saml_username_attr
       CONCOURSE_SAML_EMAIL_ATTR    = var.concourse_saml_conf.concourse_saml_email_attr
       CONCOURSE_SAML_GROUPS_ATTR   = var.concourse_saml_conf.concourse_saml_groups_attr
+    } : {},
+    var.github_oauth_conf.enable_oauth ? {
+      # GitHub oAuth
+      CONCOURSE_GITHUB_CLIENT_ID     = var.github_oauth_conf.concourse_github_client_id
+      CONCOURSE_GITHUB_CLIENT_SECRET = var.github_oauth_conf.concourse_github_client_secret
     } : {},
   )
 
@@ -105,6 +107,10 @@ locals {
       worker_key_public_secret_arn           = var.concourse_sec.worker_key_public_secret_arn
       enable_saml                            = var.concourse_saml_conf.enable_saml
       concourse_main_team_saml_group         = var.concourse_saml_conf.concourse_main_team_saml_group
+      enable_oauth                           = var.github_oauth_conf.enable_oauth
+      concourse_main_team_github_org         = var.github_oauth_conf.concourse_main_team_github_org
+      concourse_main_team_github_team        = var.github_oauth_conf.concourse_main_team_github_team
+      concourse_main_team_github_user        = var.github_oauth_conf.concourse_main_team_github_user
     }
   )
 
