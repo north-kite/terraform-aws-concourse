@@ -33,6 +33,27 @@ Example:
 ```
 The example above assumes that a group named `saml-group-name-admin` has been created in Okta. This group will be added to `main` team in Concourse thus giving its members full Concourse admin permissions. 
 
+### Configuring to use GitHub oAuth
+`github_oauth_conf` - (Optional) - Specifies oAuth config to use with GitHub. This configuration
+is likely GitHub specific, but may work with other oAuth providers as well.
+* `enable_oauth` - A boolean flag to enable or disable the oAuth configuration. Default false.
+* `display_name` - Sets `CONCOURSE_OAUTH_DISPLAY_NAME` env var.
+* `concourse_github_client_id` - The Client ID provided by GitHub oAuth client creation.
+* `concourse_github_client_secret` - The Client Secret provided by GitHub oAuth client creation.
+* `concourse_main_team_github_org` - The name of the GitHub Organisation.
+* `concourse_main_team_github_team` - The name(s) of the GitHub Team(s) with access.
+* `concourse_main_team_github_user` - The name(s) of the GitHuB User(s) with access.
+```
+  github_oauth_conf = {
+      enable_oauth                    = true
+      display_name                    = "GitHub"
+      concourse_github_client_id      = "MY_CLIENT_ID"
+      concourse_github_client_secret  = "MY_CLIENT_SECRET"
+      concourse_main_team_github_org  = "MY_GITHUB_ORG"
+      concourse_main_team_github_team = "MY_GITHUB_TEAM"
+      concourse_main_team_github_user = "SOME_GITHUB_USER,SOME_OTHER_GITHUB_USER"
+```
+
 ### Configuring additional Concourse teams
 
 `concourse_teams_conf` - (Optional) Specifies additional teams to create in Concourse. Expects the following:

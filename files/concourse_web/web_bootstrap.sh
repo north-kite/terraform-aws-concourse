@@ -37,6 +37,11 @@ CONCOURSE_MAIN_TEAM_LOCAL_USER=$CONCOURSE_USER
 %{ if enable_saml ~}
 CONCOURSE_MAIN_TEAM_SAML_GROUP="${concourse_main_team_saml_group}"
 %{ endif ~}
+%{ if enable_oauth ~}
+CONCOURSE_MAIN_TEAM_GITHUB_ORG="${concourse_main_team_github_org}"
+CONCOURSE_MAIN_TEAM_GITHUB_TEAM="${concourse_main_team_github_team}"
+CONCOURSE_MAIN_TEAM_GITHUB_USER="${concourse_main_team_github_user}"
+%{ endif ~}
 EOF
 
 echo `date +'%Y %b %d %H:%M:%S'` "Starting Concourse service"

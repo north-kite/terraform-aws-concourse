@@ -348,6 +348,30 @@ variable "concourse_saml_conf" {
   }
 }
 
+variable "github_oauth_conf" {
+  description = "Concourse oAuth config for GitHub"
+
+  type = object({
+    enable_oauth                    = bool
+    display_name                    = string
+    concourse_github_client_id      = string
+    concourse_github_client_secret  = string
+    concourse_main_team_github_org  = string
+    concourse_main_team_github_team = string
+    concourse_main_team_github_user = string
+  })
+
+  default = {
+    enable_oauth                    = false
+    display_name                    = null
+    concourse_github_client_id      = null
+    concourse_github_client_secret  = null
+    concourse_main_team_github_org  = null
+    concourse_main_team_github_team = null
+    concourse_main_team_github_user = null
+  }
+}
+
 variable "concourse_teams_conf" {
   description = "Concourse teams config"
   type        = map(any)
