@@ -34,6 +34,9 @@ locals {
       CONCOURSE_AWS_SECRETSMANAGER_TEAM_SECRET_TEMPLATE     = "/concourse/{{.Team}}/{{.Secret}}"
       CONCOURSE_SECRET_CACHE_DURATION                       = "1m"
 
+      # UC GitHub Auth
+      CONCOURSE_GITHUB_HOST = var.github_url
+
       CONCOURSE_METRICS_HOST_NAME     = local.name
       CONCOURSE_CAPTURE_ERROR_METRICS = true
 

@@ -49,9 +49,9 @@ is likely GitHub specific, but may work with other oAuth providers as well.
       display_name                    = "GitHub"
       concourse_github_client_id      = "MY_CLIENT_ID"
       concourse_github_client_secret  = "MY_CLIENT_SECRET"
-      concourse_main_team_github_org  = "ONSDigital"
-      concourse_main_team_github_team = "CIA"
-      concourse_main_team_github_user = ""
+      concourse_main_team_github_org  = "MY_GITHUB_ORG"
+      concourse_main_team_github_team = "MY_GITHUB_TEAM"
+      concourse_main_team_github_user = "SOME_GITHUB_USER,SOME_OTHER_GITHUB_USER"
 ```
 
 ### Configuring additional Concourse teams
