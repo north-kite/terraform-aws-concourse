@@ -65,6 +65,7 @@ locals {
     } : {},
     var.github_oauth_conf.enable_oauth ? {
       # GitHub oAuth
+      CONCOURSE_OAUTH_DISPLAY_NAME   = var.github_oauth_conf.display_name
       CONCOURSE_GITHUB_CLIENT_ID     = var.github_oauth_conf.concourse_github_client_id
       CONCOURSE_GITHUB_CLIENT_SECRET = var.github_oauth_conf.concourse_github_client_secret
     } : {},
