@@ -34,9 +34,6 @@ locals {
       CONCOURSE_AWS_SECRETSMANAGER_TEAM_SECRET_TEMPLATE     = "/concourse/{{.Team}}/{{.Secret}}"
       CONCOURSE_SECRET_CACHE_DURATION                       = "1m"
 
-      # UC GitHub Auth
-      CONCOURSE_GITHUB_HOST = var.github_url
-
       CONCOURSE_METRICS_HOST_NAME     = local.name
       CONCOURSE_CAPTURE_ERROR_METRICS = true
 
@@ -69,6 +66,7 @@ locals {
     var.github_oauth_conf.enable_oauth ? {
       # GitHub oAuth
       CONCOURSE_OAUTH_DISPLAY_NAME   = var.github_oauth_conf.display_name
+      CONCOURSE_GITHUB_HOST          = var.github_url
       CONCOURSE_GITHUB_CLIENT_ID     = var.github_oauth_conf.concourse_github_client_id
       CONCOURSE_GITHUB_CLIENT_SECRET = var.github_oauth_conf.concourse_github_client_secret
     } : {},
