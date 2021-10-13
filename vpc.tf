@@ -34,7 +34,7 @@ module "vpc" {
 }
 
 data "aws_vpc" "vpc" {
-  count = ! var.create_vpc ? 1 : 0
+  count = !var.create_vpc ? 1 : 0
   id    = var.vpc_id
 }
 
