@@ -270,12 +270,6 @@ variable "is_internal" {
   default     = false
 }
 
-variable "github_url" {
-  type        = string
-  description = "The URL for the GitHub used for OAuth"
-  default     = "github.com"
-}
-
 variable "concourse_version" {
   type        = string
   description = "The Concourse version to deploy"
