@@ -168,7 +168,7 @@ resource "aws_iam_role_policy_attachment" "concourse_tag_ec2" {
 
 data "aws_iam_policy_document" "concourse_worker_assume_ci_role_default" {
   statement {
-    sid = "AllowConcourseWorkerAssumeCIRole"
+    sid = "AllowConcourseWorkerAssumeCIRoleDefault"
     actions = [
       "sts:AssumeRole",
     ]
@@ -179,7 +179,7 @@ data "aws_iam_policy_document" "concourse_worker_assume_ci_role_default" {
 
 data "aws_iam_policy_document" "concourse_worker_assume_ci_role_custom" {
   statement {
-    sid = "AllowConcourseWorkerAssumeCIRole"
+    sid = "AllowConcourseWorkerAssumeCIRoleCustom"
     actions = [
       "sts:AssumeRole",
     ]
@@ -191,7 +191,7 @@ data "aws_iam_policy_document" "concourse_worker_assume_ci_role_custom" {
 resource "aws_iam_policy" "concourse_worker_assume_ci_role" {
   name        = "${local.environment}-concourse-worker-assume-ci-role"
   description = "Allow Concourse Workers to assume the CI Role"
-  policy      = var.concourse_worker_conf.instance_iam_role == null ? data.aws_iam_policy_document.concourse_worker_assume_ci_role_default.json : data.aws_iam_policy_document.concourse_worker_assume_ci_role_custom.json
+  policy      = var.concourse_worker_conf.instance_iam_role == null ? data.aws_iam_policy_document.concourse_worker_assume_ci_role_custom.json : data.aws_iam_policy_document.concourse_worker_assume_ci_role_default.json
 }
 
 resource "aws_iam_role_policy_attachment" "concourse_worker_assume_ci_role" {
