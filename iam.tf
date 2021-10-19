@@ -191,7 +191,7 @@ data "aws_iam_policy_document" "concourse_worker_assume_ci_role_custom" {
 resource "aws_iam_policy" "concourse_worker_assume_ci_role" {
   name        = "${local.environment}-concourse-worker-assume-ci-role"
   description = "Allow Concourse Workers to assume the CI Role"
-  policy      = var.concourse_worker_conf.instance_iam_role == null ? data.aws_iam_policy_document.concourse_worker_assume_ci_role_custom.json : data.aws_iam_policy_document.concourse_worker_assume_ci_role_default.json
+  policy      = var.concourse_worker_conf.worker_assume_ci_roles == null ? data.aws_iam_policy_document.concourse_worker_assume_ci_role_default.json : data.aws_iam_policy_document.concourse_worker_assume_ci_role_custom.json
 }
 
 resource "aws_iam_role_policy_attachment" "concourse_worker_assume_ci_role" {
