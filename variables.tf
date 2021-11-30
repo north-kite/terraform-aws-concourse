@@ -366,6 +366,28 @@ variable "github_oauth_conf" {
   }
 }
 
+variable "gitlab_oauth_conf" {
+  description = "Concourse oAuth config for GitLab"
+
+  type = object({
+    enable_oauth                     = bool
+    display_name                     = string
+    concourse_gitlab_client_id       = string
+    concourse_gitlab_client_secret   = string
+    concourse_main_team_gitlab_group = string
+    concourse_main_team_gitlab_user  = string
+  })
+
+  default = {
+    enable_oauth                     = false
+    display_name                     = null
+    concourse_gitlab_client_id       = null
+    concourse_gitlab_client_secret   = null
+    concourse_main_team_gitlab_group = null
+    concourse_main_team_gitlab_user  = null
+  }
+}
+
 variable "concourse_teams_conf" {
   description = "Concourse teams config"
   type        = map(any)

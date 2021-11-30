@@ -42,7 +42,7 @@ is likely GitHub specific, but may work with other oAuth providers as well.
 * `concourse_github_client_secret` - The Client Secret provided by GitHub oAuth client creation.
 * `concourse_main_team_github_org` - The name of the GitHub Organisation.
 * `concourse_main_team_github_team` - The name(s) of the GitHub Team(s) with access.
-* `concourse_main_team_github_user` - The name(s) of the GitHuB User(s) with access.
+* `concourse_main_team_github_user` - The name(s) of the GitHub User(s) with access.
 ```
   github_oauth_conf = {
       enable_oauth                    = true
@@ -52,6 +52,24 @@ is likely GitHub specific, but may work with other oAuth providers as well.
       concourse_main_team_github_org  = "MY_GITHUB_ORG"
       concourse_main_team_github_team = "MY_GITHUB_TEAM"
       concourse_main_team_github_user = "SOME_GITHUB_USER,SOME_OTHER_GITHUB_USER"
+```
+
+### Configuring to use GitLab oAuth
+`gitlab_oauth_conf` - (Optional) - Specifies oAuth config to use with GitLab.
+* `enable_oauth` - A boolean flag to enable or disable the oAuth configuration. Default false.
+* `display_name` - Sets `CONCOURSE_OAUTH_DISPLAY_NAME` env var.
+* `concourse_gitlab_client_id` - The Client ID provided by GitLab oAuth client creation.
+* `concourse_gitlab_client_secret` - The Client Secret provided by GitLab oAuth client creation.
+* `concourse_main_team_gitlab_group` - The name(s) of the GitLab Group(s) with access.
+* `concourse_main_team_gitlab_user` - The name(s) of the GitLab User(s) with access.
+```
+  gitlab_oauth_conf = {
+      enable_oauth                     = true
+      display_name                     = "GitLab"
+      concourse_gitlab_client_id       = "MY_CLIENT_ID"
+      concourse_gitlab_client_secret   = "MY_CLIENT_SECRET"
+      concourse_main_team_gitlab_group = "MY_GITLAB_GROUP"
+      concourse_main_team_gitlab_user  = "SOME_GITLAB_USER,SOME_OTHER_GITLAB_USER"
 ```
 
 ### Configuring additional Concourse teams
