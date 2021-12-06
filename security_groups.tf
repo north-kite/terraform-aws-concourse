@@ -8,7 +8,7 @@ resource "aws_security_group" "concourse_lb" {
 }
 
 resource "aws_security_group" "concourse_web" {
-  name        = "ConcourseWeb"
+  name        = "${local.environment}-ConcourseWeb"
   description = "Concourse Web Nodes"
   vpc_id      = local.vpc.vpc_id
   tags        = merge(local.common_tags, { Name = local.name })
@@ -19,7 +19,7 @@ resource "aws_security_group" "concourse_web" {
 }
 
 resource "aws_security_group" "concourse_worker" {
-  name        = "ConcourseWorker"
+  name        = "${local.environment}-ConcourseWorker"
   description = "ConcourseWorker"
   vpc_id      = local.vpc.vpc_id
   tags        = merge(local.common_tags, { Name = "${local.name}-lb" })
@@ -30,7 +30,7 @@ resource "aws_security_group" "concourse_worker" {
 }
 
 resource "aws_security_group" "concourse_vpc_endpoints" {
-  name        = "ConcourseVPCEndpoints"
+  name        = "${local.environment}-ConcourseVPCEndpoints"
   description = "Concourse VPC Endpoints"
   vpc_id      = local.vpc.vpc_id
   tags        = merge(local.common_tags, { Name = local.name })
