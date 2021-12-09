@@ -9,7 +9,7 @@ mkdir -p $HOME/bin
 tar -xzf $fly_tarball -C $HOME/bin/
 
 echo `date +'%Y %b %d %H:%M:%S'` "Waiting for Concourse to start."
-while [[ "$(netstat -n | grep ${concourse_web_port} | wc -l)" -lt 1 ]]; do
+while [[ "$(netstat -pln | grep ${concourse_web_port} | grep LISTEN | wc -l)" -lt 1 ]]; do
   sleep 5
   ((i=i+1))
   if [[ $i -gt 200 ]]; then
