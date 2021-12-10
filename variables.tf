@@ -347,7 +347,6 @@ variable "github_oauth_conf" {
 
   type = object({
     enable_oauth                    = bool
-    display_name                    = string
     concourse_github_client_id      = string
     concourse_github_client_secret  = string
     concourse_main_team_github_org  = string
@@ -357,9 +356,8 @@ variable "github_oauth_conf" {
 
   default = {
     enable_oauth                    = false
-    display_name                    = null
-    concourse_github_client_id      = null
-    concourse_github_client_secret  = null
+    concourse_github_client_id      = null # AWS Secrets Manager Path or ARN must be supplied here
+    concourse_github_client_secret  = null # AWS Secrets Manager Path or ARN must be supplied here
     concourse_main_team_github_org  = null
     concourse_main_team_github_team = null
     concourse_main_team_github_user = null
@@ -371,7 +369,6 @@ variable "gitlab_oauth_conf" {
 
   type = object({
     enable_oauth                     = bool
-    display_name                     = string
     concourse_gitlab_client_id       = string
     concourse_gitlab_client_secret   = string
     concourse_main_team_gitlab_group = string
@@ -380,9 +377,8 @@ variable "gitlab_oauth_conf" {
 
   default = {
     enable_oauth                     = false
-    display_name                     = null
-    concourse_gitlab_client_id       = null
-    concourse_gitlab_client_secret   = null
+    concourse_gitlab_client_id       = null # AWS Secrets Manager Path or ARN must be supplied here
+    concourse_gitlab_client_secret   = null # AWS Secrets Manager Path or ARN must be supplied here
     concourse_main_team_gitlab_group = null
     concourse_main_team_gitlab_user  = null
   }
