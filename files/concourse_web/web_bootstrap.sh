@@ -8,13 +8,20 @@ export CONCOURSE_PASSWORD=${concourse_password}
 
 mkdir -p /etc/concourse
 
+aws_get_secret() {
+    aws secretsmanager get-secret-value \
+        --secret-id $1 \
+        --query SecretString \
+        --output text 
+}
+
 # Obtain keys from AWS Secrets Manager
-aws secretsmanager get-secret-value --secret-id ${session_signing_key_private_secret_arn} --query SecretString --output text > /etc/concourse/session_signing_key
-aws secretsmanager get-secret-value --secret-id ${session_signing_key_public_secret_arn} --query SecretString --output text  > /etc/concourse/session_signing_key.pub
-aws secretsmanager get-secret-value --secret-id ${tsa_host_key_private_secret_arn} --query SecretString --output text > /etc/concourse/tsa_host_key
-aws secretsmanager get-secret-value --secret-id ${tsa_host_key_public_secret_arn} --query SecretString --output text > /etc/concourse/tsa_host_key.pub
-aws secretsmanager get-secret-value --secret-id ${worker_key_private_secret_arn} --query SecretString --output text > /etc/concourse/worker_key
-aws secretsmanager get-secret-value --secret-id ${worker_key_public_secret_arn} --query SecretString --output text > /etc/concourse/worker_key.pub
+aws_get_secret ${session_signing_key_private_secret_arn} > /etc/concourse/session_signing_key
+aws_get_secret ${session_signing_key_public_secret_arn}  > /etc/concourse/session_signing_key.pub
+aws_get_secret ${tsa_host_key_private_secret_arn} > /etc/concourse/tsa_host_key
+aws_get_secret ${tsa_host_key_public_secret_arn} > /etc/concourse/tsa_host_key.pub
+aws_get_secret ${worker_key_private_secret_arn} > /etc/concourse/worker_key
+aws_get_secret ${worker_key_public_secret_arn} > /etc/concourse/worker_key.pub
 cp /etc/concourse/worker_key.pub /etc/concourse/authorized_worker_keys
 chmod 0600 /etc/concourse/*
 
@@ -38,11 +45,15 @@ CONCOURSE_MAIN_TEAM_LOCAL_USER=$CONCOURSE_USER
 CONCOURSE_MAIN_TEAM_SAML_GROUP="${concourse_main_team_saml_group}"
 %{ endif ~}
 %{ if enable_github_oauth ~}
+CONCOURSE_GITHUB_CLIENT_ID=$(aws_get_secret ${concourse_github_client_id})
+CONCOURSE_GITHUB_CLIENT_SECRET=$(aws_get_secret ${concourse_github_client_secret})
 CONCOURSE_MAIN_TEAM_GITHUB_ORG="${concourse_main_team_github_org}"
 CONCOURSE_MAIN_TEAM_GITHUB_TEAM="${concourse_main_team_github_team}"
 CONCOURSE_MAIN_TEAM_GITHUB_USER="${concourse_main_team_github_user}"
 %{ endif ~}
 %{ if enable_gitlab_oauth ~}
+CONCOURSE_GITLAB_CLIENT_ID=$(aws_get_secret ${concourse_gitlab_client_id})
+CONCOURSE_GITLAB_CLIENT_SECRET=$(aws_get_secret ${concourse_gitlab_client_secret})
 CONCOURSE_MAIN_TEAM_GITLAB_GROUP="${concourse_main_team_gitlab_group}"
 CONCOURSE_MAIN_TEAM_GITLAB_USER="${concourse_main_team_gitlab_user}"
 %{ endif ~}

@@ -63,18 +63,6 @@ locals {
       CONCOURSE_SAML_EMAIL_ATTR    = var.concourse_saml_conf.concourse_saml_email_attr
       CONCOURSE_SAML_GROUPS_ATTR   = var.concourse_saml_conf.concourse_saml_groups_attr
     } : {},
-    var.github_oauth_conf.enable_oauth ? {
-      # GitHub oAuth
-      CONCOURSE_OAUTH_DISPLAY_NAME   = var.github_oauth_conf.display_name
-      CONCOURSE_GITHUB_CLIENT_ID     = var.github_oauth_conf.concourse_github_client_id
-      CONCOURSE_GITHUB_CLIENT_SECRET = var.github_oauth_conf.concourse_github_client_secret
-    } : {},
-    var.gitlab_oauth_conf.enable_oauth ? {
-      # GitLab oAuth
-      CONCOURSE_OAUTH_DISPLAY_NAME   = var.gitlab_oauth_conf.display_name
-      CONCOURSE_GITLAB_CLIENT_ID     = var.gitlab_oauth_conf.concourse_gitlab_client_id
-      CONCOURSE_GITLAB_CLIENT_SECRET = var.gitlab_oauth_conf.concourse_gitlab_client_secret
-    } : {},
   )
 
   web_systemd_file = templatefile(
@@ -115,10 +103,14 @@ locals {
       enable_saml                            = var.concourse_saml_conf.enable_saml
       concourse_main_team_saml_group         = var.concourse_saml_conf.concourse_main_team_saml_group
       enable_github_oauth                    = var.github_oauth_conf.enable_oauth
+      concourse_github_client_id             = var.github_oauth_conf.concourse_github_client_id
+      concourse_github_client_secret         = var.github_oauth_conf.concourse_github_client_secret
       concourse_main_team_github_org         = var.github_oauth_conf.concourse_main_team_github_org
       concourse_main_team_github_team        = var.github_oauth_conf.concourse_main_team_github_team
       concourse_main_team_github_user        = var.github_oauth_conf.concourse_main_team_github_user
       enable_gitlab_oauth                    = var.gitlab_oauth_conf.enable_oauth
+      concourse_gitlab_client_id             = var.gitlab_oauth_conf.concourse_gitlab_client_id
+      concourse_gitlab_client_secret         = var.gitlab_oauth_conf.concourse_gitlab_client_secret
       concourse_main_team_gitlab_group       = var.gitlab_oauth_conf.concourse_main_team_gitlab_group
       concourse_main_team_gitlab_user        = var.gitlab_oauth_conf.concourse_main_team_gitlab_user
     }
