@@ -58,6 +58,11 @@ variable "concourse_web_conf" {
         time             = string
       })
     })
+    ebs_volume = object({
+      type = string
+      iops = number
+      size = number
+    })
   })
 
   default = {
@@ -80,6 +85,11 @@ variable "concourse_web_conf" {
         desired_capacity = 1
         time             = "0 7 * * 1-5"
       }
+    }
+    ebs_volume = {
+      type = "gp3"
+      iops = 3000
+      size = 40
     }
   }
 }
@@ -111,6 +121,11 @@ variable "concourse_worker_conf" {
         time             = string
       })
     })
+    ebs_volume = object({
+      type = string
+      iops = number
+      size = number
+    })
   })
   default = {
     instance_iam_role      = null
@@ -136,6 +151,11 @@ variable "concourse_worker_conf" {
         desired_capacity = 1
         time             = "0 7 * * 1-5"
       }
+    }
+    ebs_volume = {
+      type = "gp3"
+      iops = 3000
+      size = 100
     }
   }
 }

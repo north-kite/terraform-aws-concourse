@@ -14,9 +14,9 @@ resource "aws_launch_template" "concourse_web" {
     ebs {
       delete_on_termination = true
       encrypted             = true
-      volume_type           = "io1"
-      iops                  = 2000
-      volume_size           = 40
+      volume_type           = var.concourse_web_conf.ebs_volume.type
+      iops                  = var.concourse_web_conf.ebs_volume.iops
+      volume_size           = var.concourse_web_conf.ebs_volume.size
     }
   }
 
