@@ -40,12 +40,12 @@ resource "aws_iam_role_policy_attachment" "concourse_worker_cloudwatch_logging" 
 }
 
 resource "aws_iam_role_policy_attachment" "concourse_web_ssm" {
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
   role       = aws_iam_role.concourse_web.id
 }
 
 resource "aws_iam_role_policy_attachment" "concourse_worker_ssm" {
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
   role       = var.concourse_worker_conf.instance_iam_role == null ? aws_iam_role.concourse_worker[0].id : var.concourse_worker_conf.instance_iam_role
 }
 
