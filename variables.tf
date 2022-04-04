@@ -177,7 +177,7 @@ variable "concourse_db_conf" {
     instance_type           = "db.t3.medium"
     db_count                = 1
     engine                  = "aurora-postgresql"
-    engine_version          = "10.11"
+    engine_version          = "10.14"
     backup_retention_period = 14
     preferred_backup_window = "01:00-03:00"
     skip_final_snapshot     = false
