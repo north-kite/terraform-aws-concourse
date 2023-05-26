@@ -19,16 +19,21 @@ git-hooks: ## Set up hooks in .githooks
 
 .PHONY: test
 test: ## Build, test, and destroy default scenario with Kitchen Terraform
-	docker run --rm -e AWS_PROFILE=default -v $(shell pwd):/usr/action -v ~/.aws:/root/.aws -v /etc/ssl/certs/:/usr/local/share/ca-certificates/ quay.io/dwp/kitchen-terraform:0.14.7 "test $(test_suites) --destroy=always"
+	@ci/scripts/run-kitchen.sh --action test --args "${test_suites} --destroy=always"
 
 .PHONY: build
 build: ## Build default scenario with Kitchen Terraform
-	docker run --rm -e AWS_PROFILE=default -v $(shell pwd):/usr/action -v ~/.aws:/root/.aws -v /etc/ssl/certs/:/usr/local/share/ca-certificates/ quay.io/dwp/kitchen-terraform:0.14.7 "converge $(test_suites)"
+	@ci/scripts/run-kitchen.sh --action converge --args ${test_suites}
 
 .PHONY: verify
 verify: ## Build default scenario with Kitchen Terraform
-	docker run --rm -e AWS_PROFILE=default -v $(shell pwd):/usr/action -v ~/.aws:/root/.aws -v /etc/ssl/certs/:/usr/local/share/ca-certificates/ quay.io/dwp/kitchen-terraform:0.14.7 "verify $(test_suites)"
+	@ci/scripts/run-kitchen.sh --action verify --args ${test_suites}
 
 .PHONY: destroy
 destroy: ## Build default scenario with Kitchen Terraform
-	docker run --rm -e AWS_PROFILE=default -v $(shell pwd):/usr/action -v ~/.aws:/root/.aws -v /etc/ssl/certs/:/usr/local/share/ca-certificates/ quay.io/dwp/kitchen-terraform:0.14.7 "destroy $(test_suites)"
+	@ci/scripts/run-kitchen.sh --action destroy --args ${test_suites}
+
+.PHONY: debug
+debug: ## Debug hybrid-mode scenario with Kitchen Terraform
+	@ci/scripts/run-kitchen.sh --action debug --args ${test_suites}
+
