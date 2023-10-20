@@ -3,25 +3,25 @@ variable "region" {
 }
 
 variable "project_name" {
-  description = "The project / repo name for use in resource naming / tags"
+  description = "(Optional) The project / repo name for use in resource naming / tags"
   type        = string
   default     = "cicd"
 }
 
 variable "project_owner" {
-  description = "The name of the project owner, for use in tagging"
+  description = "(Optional) The name of the project owner, for use in tagging"
   type        = string
   default     = "OPS"
 }
 
 variable "project_team" {
-  description = "The name of the project team, for use in tagging"
+  description = "(Optional) The name of the project team, for use in tagging"
   type        = string
   default     = "OPS"
 }
 
 variable "whitelist_cidr_blocks" {
-  description = "Used as the whitelisted range for accessing the External Load Balancer for Concourse"
+  description = "(Optional) Used as the whitelisted range for accessing the External Load Balancer for Concourse"
   type        = list(string)
   default = [
     "0.0.0.0/0"
@@ -29,13 +29,13 @@ variable "whitelist_cidr_blocks" {
 }
 
 variable "ami_id" {
-  description = "AMI ID to use for launching Concourse Instances"
+  description = "(Optional) AMI ID to use for launching Concourse Instances"
   type        = string
   default     = "ami-098828924dc89ea4a" // latest AL2 x86 AMI as of 15/02/21 #TODO this is out of date
 }
 
 variable "concourse_web_conf" {
-  description = "Concourse Web config options"
+  description = "(Optional) Concourse Web config options"
 
   type = object({
     count                  = number
@@ -95,7 +95,7 @@ variable "concourse_web_conf" {
 }
 
 variable "concourse_worker_conf" {
-  description = "Concourse Worker config options"
+  description = "(Optional) Concourse Worker config options"
   type = object({
     instance_iam_role      = string
     worker_assume_ci_roles = list(string)
@@ -209,7 +209,7 @@ variable "existing_database_config" {
 }
 
 variable "cidr" {
-  description = "The CIDR ranges used for the deployed subnets"
+  description = "(Optional) The CIDR ranges used for the deployed subnets"
 
   type = object({
     vpc     = string
@@ -225,7 +225,7 @@ variable "cidr" {
 }
 
 variable "vpc_name" {
-  description = "The name to use for the VPC"
+  description = "(Optional) The name to use for the VPC"
   type        = string
   default     = "cicd"
 }
@@ -279,7 +279,7 @@ variable "vpc_endpoint_dynamodb_pl_id" {
 }
 
 variable "root_domain" {
-  description = "The root DNS domain on which to base the deployment"
+  description = "(Optional) The root DNS domain on which to base the deployment"
   type        = string
   default     = "cicd.aws"
 }
@@ -292,18 +292,18 @@ variable "is_internal" {
 
 variable "concourse_version" {
   type        = string
-  description = "The Concourse version to deploy"
+  description = "(Optional) The Concourse version to deploy"
   default     = "7.2.0"
 }
 
 variable "concourse_web_port" {
   type        = number
-  description = "TCP port that Concourse web service listens on. Do not change."
+  description = "(Optional) TCP port that Concourse web service listens on. Do not change."
   default     = 8080
 }
 
 variable "concourse_sec" {
-  description = "Concourse Security Config"
+  description = "(Optional) Concourse Security Config"
 
   type = object({
     concourse_username                     = string
@@ -335,7 +335,7 @@ variable "concourse_sec" {
 }
 
 variable "concourse_saml_conf" {
-  description = "Concourse SAML config for e.g. Okta"
+  description = "(Optional) Concourse SAML config for e.g. Okta"
 
   type = object({
     enable_saml                    = bool
@@ -363,7 +363,7 @@ variable "concourse_saml_conf" {
 }
 
 variable "github_oauth_conf" {
-  description = "Concourse oAuth config for GitHub"
+  description = "(Optional) Concourse oAuth config for GitHub"
 
   type = object({
     enable_oauth                    = bool
@@ -385,7 +385,7 @@ variable "github_oauth_conf" {
 }
 
 variable "gitlab_oauth_conf" {
-  description = "Concourse oAuth config for GitLab"
+  description = "(Optional) Concourse oAuth config for GitLab"
 
   type = object({
     enable_oauth                     = bool
@@ -405,13 +405,13 @@ variable "gitlab_oauth_conf" {
 }
 
 variable "concourse_teams_conf" {
-  description = "Concourse teams config"
+  description = "(Optional) Concourse teams config"
   type        = map(any)
   default     = {}
 }
 
 variable "concourse_internal_allowed_principals" {
-  description = "A list of AWS principals that are allowed to reach Concourse via its internal load balancer"
+  description = "(Optional) A list of AWS principals that are allowed to reach Concourse via its internal load balancer"
   type        = list(string)
   default     = []
 }
